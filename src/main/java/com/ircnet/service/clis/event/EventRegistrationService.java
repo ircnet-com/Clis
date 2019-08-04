@@ -31,6 +31,7 @@ public class EventRegistrationService {
 
     @PostConstruct
     public void init() {
+        EventBus.setCheckInheritance(false);
         EventBus.registerEventListener(youAreServiceEventListener);
         EventBus.registerEventListener(channelEventListener);
         EventBus.registerEventListener(topicEventListener);
