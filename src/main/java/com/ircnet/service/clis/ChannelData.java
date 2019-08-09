@@ -14,6 +14,9 @@ public class ChannelData {
   private String modes;
   private int userCount;
 
+  public ChannelData() {
+  }
+
   public ChannelData(String name) {
     this.name = name;
   }

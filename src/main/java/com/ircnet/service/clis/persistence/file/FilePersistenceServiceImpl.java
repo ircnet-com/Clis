@@ -77,10 +77,8 @@ public class FilePersistenceServiceImpl implements PersistenceService {
       return;
     }
 
-    Instant start = Instant.now();
     channels.stream().forEach(e -> channelMap.put(e.getName(), e));
-    Instant finish = Instant.now();
-    long timeElapsed = Duration.between(start, finish).getSeconds();
-    LOGGER.info("Loaded {} channels from {} in {} seconds", channelMap.size(), fileName, timeElapsed);
+
+    LOGGER.info("Loaded {} channels from {}", channelMap.size(), fileName);
   }
 }

@@ -2,6 +2,9 @@ package com.ircnet.service.clis.service.impl;
 
 import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.service.ChannelService;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -67,12 +70,17 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public Collection<ChannelData> findAll(String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder) {
+    public Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder) {
         LOGGER.debug("Filtering channels for query: topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}", topic, minUsers, maxUsers, sortBy);
         Instant start = Instant.now();
 
         Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
 
+        if(!StringUtils.isBlank(mask)) {
+            stream = stream.filter(e -> FilenameUtils.wildcardMatch(e.getValue().getName(), mask, IOCase.INSENSITIVE));
+        }
+
+        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
         stream = stream.filter(e -> e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1);
 
         if(minUsers != null) {
