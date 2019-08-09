@@ -1,8 +1,8 @@
 package com.ircnet.service.clis.service;
 
-import com.ircnet.service.clis.entity.ChannelEntity;
+import com.ircnet.service.clis.ChannelData;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * TODO.
@@ -16,13 +16,6 @@ public interface ChannelService {
    * @param userCount User count
    */
   void updateOrInsert(String name, int userCount);
-
-  /**
-   * Removes a channel.
-   *
-   * @param name Name of the channel
-   */
-  void remove(String name);
 
   /**
    * Updates the modes of a channel.
@@ -43,14 +36,7 @@ public interface ChannelService {
 
   /**
    * Finds channels by given criteria.
+   * @return
    */
-  List<ChannelEntity> findAll(String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder);
-
-  /**
-   * Updates the visibility status.
-   *
-   * @param name Name of the channel
-   * @param visible true if the channel is visible, otherwise false
-   */
-  void updateVisibility(String name, boolean visible);
+  Collection<ChannelData> findAll(String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder);
 }

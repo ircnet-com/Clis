@@ -16,10 +16,6 @@ public class ChannelModeEventListener extends AbstractEventListener<ChannelModeE
     private ChannelService channelService;
 
     protected void onEvent(ChannelModeEvent event) {
-        boolean visible = event.getModes().indexOf('s') == -1 && event.getModes().indexOf('p') == -1;
-
-        // Update visibility status. Channel will be removed later by CleanUpJob
-        channelService.updateVisibility(event.getChannelName(), visible);
         channelService.updateModes(event.getChannelName(), event.getModes());
     }
 }

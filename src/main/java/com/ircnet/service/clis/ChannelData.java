@@ -1,29 +1,28 @@
-package com.ircnet.service.clis.entity;
+package com.ircnet.service.clis;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 /**
- * TODO.
+ *
  */
-@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ChannelEntity {
-  @Id
+public class ChannelData {
   private String name;
   private String topic;
   private String topicFrom;
   private String modes;
   private int userCount;
-  private boolean invisible;
 
-  public ChannelEntity() {
+  public ChannelData(String name) {
+    this.name = name;
   }
 
-  public ChannelEntity(String name, int userCount) {
+  public ChannelData(String name, String topic, String topicFrom, String modes, int userCount, boolean invisible) {
     this.name = name;
+    this.topic = topic;
+    this.topicFrom = topicFrom;
+    this.modes = modes;
     this.userCount = userCount;
   }
 
@@ -65,13 +64,5 @@ public class ChannelEntity {
 
   public void setUserCount(int userCount) {
     this.userCount = userCount;
-  }
-
-  public boolean isInvisible() {
-    return invisible;
-  }
-
-  public void setInvisible(boolean invisible) {
-    this.invisible = invisible;
   }
 }

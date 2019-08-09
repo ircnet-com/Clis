@@ -1,5 +1,6 @@
 package com.ircnet.service.clis;
 
+import com.ircnet.service.clis.persistence.PersistenceService;
 import com.ircnet.service.library.IRCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -12,6 +13,9 @@ public class Application implements CommandLineRunner {
     @Autowired
     private IRCService ircService;
 
+    @Autowired
+    private PersistenceService persistenceService;
+
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(Application.class);
         springApplication.setBannerMode(Banner.Mode.OFF);
@@ -21,6 +25,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        persistenceService.loadChannels();
         ircService.start();
     }
 }

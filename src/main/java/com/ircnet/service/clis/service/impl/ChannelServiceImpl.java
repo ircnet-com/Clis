@@ -1,134 +1,118 @@
 package com.ircnet.service.clis.service.impl;
 
-import com.ircnet.service.clis.entity.ChannelEntity;
-import com.ircnet.service.clis.repository.ChannelRepository;
+import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.service.ChannelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
+import javax.annotation.Resource;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * TODO.
  */
 @Component
 public class ChannelServiceImpl implements ChannelService {
-    private static Logger LOG = LoggerFactory.getLogger(ChannelServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChannelServiceImpl.class);
 
-    @Autowired
-    private ChannelRepository channelRepository;
+    @Resource(name = "channelMap")
+    private Map<String, ChannelData> channelMap;
 
     @Override
     public void updateOrInsert(String name, int userCount) {
         Assert.isTrue(userCount > 0, "User count must be greater than zero");
 
-        ChannelEntity channelEntity = channelRepository.findByNameIgnoreCase(name);
+        ChannelData channelData = channelMap.get(name);
 
-        if (channelEntity != null) {
-            // Channel exists in database already. Update user count.
-            channelEntity.setUserCount(userCount);
-            channelRepository.save(channelEntity);
-            LOG.debug("Set user count of channel {} to {}", channelEntity, userCount);
-        } else {
-            // Channel does not exist yet. Insert channel and user count.
-            channelEntity = new ChannelEntity(name, userCount);
-            channelRepository.save(channelEntity);
-            LOG.debug("Inserted channel {} with user count {}", channelEntity.getName(), channelEntity.getUserCount());
+        if (channelData == null) {
+            channelData = new ChannelData(name);
+            channelMap.put(name, channelData);
         }
-    }
 
-    @Override
-    public void remove(String name) {
-        ChannelEntity channelEntity = channelRepository.findByNameIgnoreCase(name);
-
-        if (channelEntity != null) {
-            channelRepository.delete(channelEntity);
-            LOG.debug("Channel {} has been removed", name);
-        } else {
-            LOG.error("Failed to remove channel {} - channel does not exist in database", name);
-        }
+        channelData.setUserCount(userCount);
     }
 
     @Override
     public void updateModes(String name, String modes) {
-        ChannelEntity channelEntity = channelRepository.findByNameIgnoreCase(name);
+        ChannelData channelData = channelMap.get(name);
 
-        if (channelEntity != null) {
-            channelEntity.setModes(modes);
-            channelRepository.save(channelEntity);
-            LOG.debug("Set modes of channel {} to {}", channelEntity.getName(), channelEntity.getModes());
-        } else {
-            LOG.error("Failed to update modes of channel {} - channel does not exist in database", name);
+        if (channelData == null) {
+            channelData = new ChannelData(name);
+            channelMap.put(name, channelData);
         }
-    }
 
-    @Override
-    public void updateVisibility(String name, boolean visible) {
-        ChannelEntity channelEntity = channelRepository.findByNameIgnoreCase(name);
-
-        if (channelEntity != null) {
-            channelEntity.setInvisible(!visible);
-            channelRepository.save(channelEntity);
-            LOG.debug("Set channel {} as invisible", channelEntity.getName());
-        } else {
-            LOG.error("Failed to set channel {} as invisible - channel does not exist in database", name);
-        }
+        channelData.setModes(modes);
     }
 
     @Override
     public void updateTopic(String name, String topic, String from) {
-        ChannelEntity channelEntity = channelRepository.findByNameIgnoreCase(name);
+        ChannelData channelData = channelMap.get(name);
 
-        if (channelEntity != null) {
-            channelEntity.setTopic(topic);
-            channelEntity.setTopicFrom(from);
-            channelRepository.save(channelEntity);
-
-            if (channelEntity.getTopicFrom() != null) {
-                LOG.debug("Set topic of channel {} to '{}' (from {})", channelEntity.getName(), channelEntity.getTopic(), channelEntity.getTopicFrom());
-            } else {
-                LOG.debug("Set topic of channel {} to '{}'", channelEntity.getName(), channelEntity.getTopic());
-            }
-        } else {
-            LOG.error("Failed to update topic of channel {} - channel does not exist in database", name);
+        if (channelData == null) {
+            channelData = new ChannelData(name);
+            channelMap.put(name, channelData);
         }
+
+        channelData.setTopic(topic);
+        channelData.setTopicFrom(from);
     }
 
     @Override
-    public List<ChannelEntity> findAll(String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder) {
-        // TODO: exclude invisible channels
+    public Collection<ChannelData> findAll(String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder) {
+        LOGGER.debug("Filtering channels for query: topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}", topic, minUsers, maxUsers, sortBy);
+        Instant start = Instant.now();
 
-        Sort sort = Sort.by(Sort.Direction.valueOf(sortOrder.toUpperCase()), sortBy);
+        Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
 
-        return channelRepository.findAll(new Specification<ChannelEntity>() {
-            @Override
-            public Predicate toPredicate(Root<ChannelEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
+        stream = stream.filter(e -> e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1);
 
-                if (topic != null) {
-                    predicates.add(criteriaBuilder.like(root.get("topic"), "%" + topic + "%"));
-                }
+        if(minUsers != null) {
+            stream = stream.filter(e -> e.getValue().getUserCount() >= minUsers);
+        }
 
-                if(minUsers != null) {
-                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("userCount"), minUsers));
-                }
+        if(maxUsers != null) {
+            stream = stream.filter(e -> e.getValue().getUserCount() <= maxUsers);
+        }
 
-                if(maxUsers != null) {
-                    predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("userCount"), maxUsers));
-                }
+        if(topic != null) {
+            stream = stream.filter(e -> e.getValue().getTopic() != null && e.getValue().getTopic().contains(topic));
+        }
 
-                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-            }
-        }, sort);
+        Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
+
+        // Sort
+        Comparator<ChannelData> comparator;
+
+        if("usercount".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparingInt(ChannelData::getUserCount);
+
+        }
+        else {
+            // Sort by name
+            comparator = Comparator.comparing(ChannelData::getName);
+        }
+
+        if("desc".equalsIgnoreCase(sortOrder)) {
+            comparator = comparator.reversed();
+        }
+
+        channelDataStream = channelDataStream.sorted(comparator);
+
+        List<ChannelData> channelList = channelDataStream.collect(Collectors.toList());
+
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        LOGGER.debug("Found {} channels in {} seconds", channelList.size(), timeElapsed / 1000.0);
+
+        return channelList;
     }
 }

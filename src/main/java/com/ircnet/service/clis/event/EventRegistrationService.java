@@ -24,9 +24,6 @@ public class EventRegistrationService {
     private SQueryEventListener squeryEventListener;
 
     @Autowired
-    private ServSetEventListener servSetEventListener;
-
-    @Autowired
     private EndOfBurstEventListener endOfBurstEventListener;
 
     @PostConstruct
@@ -37,7 +34,6 @@ public class EventRegistrationService {
         EventBus.registerEventListener(topicEventListener);
         EventBus.registerEventListener(channelModeEventListener);
         EventBus.registerEventListener(squeryEventListener);
-        EventBus.registerEventListener(servSetEventListener);
         EventBus.registerEventListener(endOfBurstEventListener);
     }
 }

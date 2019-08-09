@@ -10,12 +10,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
+@EnableScheduling
 public class ClisConfiguration extends WebMvcConfigurationSupport {
     @Value("${service.name}")
     private String serviceName;
@@ -68,6 +73,11 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
         serviceConfiguration.setIrcServers(Collections.singletonList(ircServerModel));
 
         return new IRCService(serviceConfiguration);
+    }
+
+    @Bean
+    public Map<String, ChannelData> channelMap() {
+        return new ConcurrentHashMap<>();
     }
 
     @Override
