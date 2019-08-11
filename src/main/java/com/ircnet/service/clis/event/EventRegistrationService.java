@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * This class registers event listeners.
+ */
 @Component
 public class EventRegistrationService {
     @Autowired
@@ -28,7 +31,14 @@ public class EventRegistrationService {
 
     @PostConstruct
     public void init() {
+        /**
+         * MUST be set to false to avoid heavy performance issues.
+         */
         EventBus.setCheckInheritance(false);
+
+        /**
+         * Registration of event listeners.
+         */
         EventBus.registerEventListener(youAreServiceEventListener);
         EventBus.registerEventListener(channelEventListener);
         EventBus.registerEventListener(topicEventListener);

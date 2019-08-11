@@ -1,17 +1,36 @@
 package com.ircnet.service.clis;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- *
+ * Contains channel information.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChannelData {
+  /**
+   * Name of the channel.
+   */
   private String name;
+
+  /**
+   * Topic of the channel. May be null.
+   */
   private String topic;
+
+  /**
+   * Author of the topic. May be null.
+   */
   private String topicFrom;
+
+  /**
+   * Modes of the channel. Starts with '+'.
+   */
   private String modes;
+
+  /**
+   * User count of the channel.
+   * The value is 0, if the channel is only stored to keep the topic.
+   */
   private int userCount;
 
   public ChannelData() {
@@ -21,7 +40,7 @@ public class ChannelData {
     this.name = name;
   }
 
-  public ChannelData(String name, String topic, String topicFrom, String modes, int userCount, boolean invisible) {
+  public ChannelData(String name, String topic, String topicFrom, String modes, int userCount) {
     this.name = name;
     this.topic = topic;
     this.topicFrom = topicFrom;

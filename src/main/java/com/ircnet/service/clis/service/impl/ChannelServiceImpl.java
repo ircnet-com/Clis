@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * TODO.
+ * {@inheritDoc}
  */
 @Component
 public class ChannelServiceImpl implements ChannelService {
@@ -76,13 +76,28 @@ public class ChannelServiceImpl implements ChannelService {
 
         Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
 
+        /**
+         * Remove channels which have no users.
+         * These channels are stored only to keep the topic.
+         */
+        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
+
+        /**
+         * Remove secret and private channels.
+         * These channels are also stored only to keep the topic.
+         */
+        stream = stream.filter(e ->  e.getValue().getModes() == null || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
+
+        /**
+         * Apply mask filter.
+         */
         if(!StringUtils.isBlank(mask)) {
             stream = stream.filter(e -> FilenameUtils.wildcardMatch(e.getValue().getName(), mask, IOCase.INSENSITIVE));
         }
 
-        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
-        stream = stream.filter(e -> e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1);
-
+        /**
+         * Apply user count filters (optional).
+         */
         if(minUsers != null) {
             stream = stream.filter(e -> e.getValue().getUserCount() >= minUsers);
         }
@@ -91,13 +106,18 @@ public class ChannelServiceImpl implements ChannelService {
             stream = stream.filter(e -> e.getValue().getUserCount() <= maxUsers);
         }
 
+        /**
+         * Apply topic filter (optional).
+         */
         if(topic != null) {
             stream = stream.filter(e -> e.getValue().getTopic() != null && e.getValue().getTopic().contains(topic));
         }
 
         Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
 
-        // Sort
+        /**
+         * Sorting.
+         */
         Comparator<ChannelData> comparator;
 
         if("usercount".equalsIgnoreCase(sortBy)) {

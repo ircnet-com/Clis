@@ -1,6 +1,5 @@
 package com.ircnet.service.clis.event;
 
-import com.ircnet.common.library.connection.IRCConnection;
 import com.ircnet.common.library.event.AbstractEventListener;
 import com.ircnet.service.clis.Constants;
 import com.ircnet.service.library.IRCService;
@@ -18,6 +17,14 @@ import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Formatter;
 
+/**
+ * Event for SQUERY message:
+ *  :nick!user@localhost SQUERY Clis@irc.ircnet.com :list #irc
+ *
+ * SQUERY is used by users to talk to services. Services reply by NOTICE.
+ *
+ * This event listener parses all supported commands of Clis.
+ */
 @Component
 public class SQueryEventListener extends AbstractEventListener<SQueryEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(com.ircnet.service.library.events.SQueryEventListener.class);

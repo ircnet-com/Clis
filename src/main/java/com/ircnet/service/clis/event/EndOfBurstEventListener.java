@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Map;
 
+/**
+ * Event for EOB message.
+ *
+ * This event listener is used to measure the time for parsing a burst.
+ */
 @Component
 public class EndOfBurstEventListener extends AbstractEventListener<EndOfBurstEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EndOfBurstEventListener.class);

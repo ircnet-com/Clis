@@ -5,11 +5,11 @@ import com.ircnet.service.clis.ChannelData;
 import java.util.Collection;
 
 /**
- * TODO.
+ * Finds and updates channels which are stored in memory.
  */
 public interface ChannelService {
   /**
-   * If the channel does not exist already, the channel and the user account will be inserted.
+   * If the channel does not exist already, the channel and the user count will be inserted.
    * If the channel exists already, the user count will be updated.
    *
    * @param name Name of the channel
@@ -30,13 +30,14 @@ public interface ChannelService {
    *
    * @param name Name of the channel
    * @param topic New topic
-   * @param nick Nick of the one who set the topic (optional)
+   * @param nick Nick of the one who set the topic, can be null
    */
   void updateTopic(String name, String topic, String nick);
 
   /**
    * Finds channels by given criteria.
-   * @return
+   *
+   * @return A list of channels, may be empty, never null
    */
   Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder);
 }

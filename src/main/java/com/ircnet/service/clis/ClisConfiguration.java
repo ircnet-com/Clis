@@ -14,11 +14,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Spring configuration.
+ */
 @Configuration
 @EnableScheduling
 public class ClisConfiguration extends WebMvcConfigurationSupport {
@@ -49,9 +51,14 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
     @Value("${ircserver.port}")
     private int ircServerPort;
 
-    @Value("${ircserver.protocol}")
+    @Value("${ircserver.protocol:#{null}}")
     private String ircServerProtocol;
 
+    /**
+     * Creates a new IRC service.
+     *
+     * @return An IRC service
+     */
     @Bean
     public IRCService ircService() {
         IRCServerModel ircServerModel = new IRCServerModel();
@@ -75,11 +82,20 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
         return new IRCService(serviceConfiguration);
     }
 
+    /**
+     * Creates a new channel map.
+     *
+     * @return A channel map
+     */
     @Bean
     public Map<String, ChannelData> channelMap() {
         return new ConcurrentHashMap<>();
     }
 
+    /**
+     * Pretty print for JSON.
+     *
+     */
     @Override
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         for (HttpMessageConverter<?> converter : converters) {

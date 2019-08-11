@@ -13,14 +13,12 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Saves channels to a json file.
+ * Persists channels in a JSON file.
  */
 @Component
 public class FilePersistenceServiceImpl implements PersistenceService {
@@ -35,6 +33,9 @@ public class FilePersistenceServiceImpl implements PersistenceService {
   @Autowired
   private ObjectMapper objectMapper;
 
+  /**
+   * Saves channels..
+   */
   @Override
   public void saveChannels() {
     if(channelMap.isEmpty()) {
@@ -59,6 +60,9 @@ public class FilePersistenceServiceImpl implements PersistenceService {
     LOGGER.info("Saved {} channels to {}", channels.size(), fileName);
   }
 
+  /**
+   * Loads channels.
+   */
   @Override
   public void loadChannels() {
     if(!channelMap.isEmpty()) {

@@ -1,16 +1,18 @@
 package com.ircnet.service.clis.persistence;
 
 /**
- * TODO.
+ * Interface for persisting channels.
  */
 public interface PersistenceService {
   /**
-   * TODO.
+   * Saves channels.
+   * This method will be executed periodically.
    */
   void saveChannels();
 
   /**
-   * TODO.
+   * Loads channels.
+   * This method will be executed at startup.
    */
   void loadChannels();
 }
