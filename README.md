@@ -11,7 +11,7 @@ TODO
 # REST API
 The REST API can be used by websites, IRC clients and other third party applications to retrieve a list of IRC channels.
 
-##Format
+## Format
 ```[ 
 {
   "name" : "#irc",
