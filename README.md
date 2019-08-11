@@ -4,6 +4,9 @@ Clis (Channel list service) is a service to list IRC channels. It replaces the d
 Clis is basically a remake of [Alis](https://www.ircnet.com/articles/alis) written in Java.
 
 # IRC Commands
+TODO
+..
+
 
 # REST API
 The REST API can be used by websites, IRC clients and other third party applications to retrieve a list of IRC channels.
