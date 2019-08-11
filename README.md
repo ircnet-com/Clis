@@ -21,7 +21,8 @@ The REST API can be used by websites, IRC clients and other third party applicat
   "modes" : "+nt",
   "userCount" : 23
 }
-]```
+]
+```
 
 ## Parameters
 
