@@ -9,7 +9,7 @@ Clis is a basically a remake of [Alis](https://www.ircnet.com/articles/alis) wri
 The REST API can be used by websites, IRC clients and other third party applications to retrieve a list of IRC channels.
 
 ##Format
-[ 
+```[ 
 {
   "name" : "#irc",
   "topic" : "visit http://www.ircnet.com",
@@ -21,7 +21,7 @@ The REST API can be used by websites, IRC clients and other third party applicat
   "modes" : "+nt",
   "userCount" : 23
 }
-]
+]```
 
 ## Parameters
 
