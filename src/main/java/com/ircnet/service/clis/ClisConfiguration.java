@@ -2,9 +2,11 @@ package com.ircnet.service.clis;
 
 import com.ircnet.common.library.configuration.IRCServerModel;
 import com.ircnet.common.library.configuration.ServerModel;
+import com.ircnet.service.clis.strategy.*;
 import com.ircnet.service.library.IRCService;
 import com.ircnet.service.library.ServiceConfigurationModel;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -54,6 +57,8 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
     @Value("${ircserver.protocol:#{null}}")
     private String ircServerProtocol;
 
+    private Map<String, SQueryCommand> squeryCommandMap;
+
     /**
      * Creates a new IRC service.
      *
@@ -83,13 +88,30 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
     }
 
     /**
-     * Creates a new channel map.
+     * Creates a new map containing SQUERY commands.
      *
-     * @return A channel map
+     * @return A map containing SQUERY commands
      */
     @Bean
     public Map<String, ChannelData> channelMap() {
         return new ConcurrentHashMap<>();
+    }
+
+    @Bean("squeryCommandMap")
+    @Autowired
+    public Map<String, SQueryCommand> squeryCommandMap(SQueryCommandList squeryCommandList,
+                                                       SQueryCommandAdmin squeryCommandAdmin,
+                                                       SQueryCommandVersion squeryCommandVersion,
+                                                       SQueryCommandInfo squeryCommandInfo) {
+        Map<String, SQueryCommand> commandMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+        commandMap.put("LIST", squeryCommandList);
+        commandMap.put("ADMIN", squeryCommandAdmin);
+        commandMap.put("INFO", squeryCommandInfo);
+        commandMap.put("VERSION", squeryCommandVersion);
+        // HELP is not added here to avoid circular dependencies
+
+        return commandMap;
     }
 
     /**

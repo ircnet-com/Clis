@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * REST controller.
@@ -33,13 +32,13 @@ public class ClisRestController {
      * @return A list of channels
      */
     @RequestMapping(value = { "/{mask}" })
-    public Collection<ChannelData> getList(@PathVariable(required = false) Optional<String> mask,
+    public Collection<ChannelData> getList(@PathVariable String mask,
                                            @RequestParam(name = "topic", required = false) String topic,
                                            @RequestParam(name = "min", required = false) Integer minUsers,
                                            @RequestParam(name = "max", required = false) Integer maxUsers,
                                            @RequestParam(name = "sortby", required = false, defaultValue = "name") String sortBy,
                                            @RequestParam(name = "order", required = false, defaultValue = "ASC") String sortOrder) {
         // TODO: validate sortBy and sortOrder
-        return channelService.find(mask.isPresent() ? mask.get() : null, topic, minUsers, maxUsers, sortBy, sortOrder);
+        return channelService.find(mask, topic, minUsers, maxUsers, sortBy, sortOrder);
     }
 }

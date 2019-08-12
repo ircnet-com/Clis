@@ -37,6 +37,13 @@ public interface ChannelService {
   /**
    * Finds channels by given criteria.
    *
+   * @param mask TODO
+   * @param topic TODO
+   * @param minUsers TODO
+   * @param maxUsers TODO
+   * @param sortBy TODO
+   * @param sortOrder TODO
+   *
    * @return A list of channels, may be empty, never null
    */
   Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder);
