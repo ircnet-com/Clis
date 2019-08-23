@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 /**
@@ -243,11 +245,8 @@ public class SQueryCommandList implements SQueryCommand {
         ircService.notice(from.getNick(), "TODO ..", serviceName);
     }
 
-    protected void sendOptionSyntax(String nick, Options options) {
-        Iterator optionIterator = options.getOptions().iterator();
-
-        while (optionIterator.hasNext()) {
-            Option option = (Option) optionIterator.next();
+    private void sendOptionSyntax(String nick, Options options) {
+        for(Option option : options.getOptions()) {
             StringBuilder stringBuilder = new StringBuilder();
 
             if (option.getOpt() == null) {
