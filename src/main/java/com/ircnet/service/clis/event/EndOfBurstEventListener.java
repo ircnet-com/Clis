@@ -25,10 +25,10 @@ public class EndOfBurstEventListener extends AbstractEventListener<EndOfBurstEve
     protected void onEvent(EndOfBurstEvent event) {
         if(event.getIRCConnection().getBurstStart() != null) {
             long timeElapsed = (System.currentTimeMillis() - event.getIRCConnection().getBurstStart().getTime()) / 1000;
-            LOGGER.info("Parsed burst in {} seconds. Received {} channels.", timeElapsed, channelMap.size());
+            LOGGER.info("Parsed burst in {} seconds. Currently {} channels.", timeElapsed, channelMap.size());
         }
         else {
-            LOGGER.info("Parsed burst. Received {} channels.", channelMap.size());
+            LOGGER.info("Parsed burst. Currently {} channels.", channelMap.size());
         }
     }
 }

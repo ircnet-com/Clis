@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,10 +45,40 @@ public class SQueryCommandList implements SQueryCommand {
     @PostConstruct
     protected void init() {
         this.options = new Options();
-        options.addOption("min", true, "minimum users on a channel");
-        options.addOption("max", true, "maximum users on a channel");
-        options.addOption("t", "topic", true, "topic of the channel shall contain string");
-        options.addOption("s", "show", true, "show modes (m) and who set the topic (t)");
+
+        Option min = Option.builder("min")
+                .hasArg()
+                .argName("number")
+                .desc("minimum users on a channel")
+                .build();
+
+        options.addOption(min);
+
+        Option max = Option.builder("max")
+                .hasArg()
+                .argName("number")
+                .desc("maximum users on a channel")
+                .build();
+
+        options.addOption(max);
+
+        Option topic = Option.builder("t")
+                .longOpt("topic")
+                .hasArg()
+                .argName("string")
+                .desc("topic of the channel shall contain string")
+                .build();
+
+        options.addOption(topic);
+
+        Option show = Option.builder("s")
+                .longOpt("show")
+                .hasArg()
+                .argName("[m][t]")
+                .desc("show modes (m) and who set the topic (t)")
+                .build();
+
+        options.addOption(show);
     }
 
     /**
@@ -208,6 +237,39 @@ public class SQueryCommandList implements SQueryCommand {
      */
     @Override
     public void processHelp(User from, String message) {
-        ircService.notice(from.getNick(), "TBD");
+        ircService.notice(from.getNick(), "Usage: /SQUERY %s [options] <mask>", serviceName);
+        sendOptionSyntax(from.getNick(), options);
+        ircService.notice(from.getNick(), "Example: TODO ..", serviceName);
+        ircService.notice(from.getNick(), "TODO ..", serviceName);
+    }
+
+    protected void sendOptionSyntax(String nick, Options options) {
+        Iterator optionIterator = options.getOptions().iterator();
+
+        while (optionIterator.hasNext()) {
+            Option option = (Option) optionIterator.next();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            if (option.getOpt() == null) {
+                stringBuilder.append("   ").append("--").append(option.getLongOpt());
+            } else {
+                stringBuilder.append("-").append(option.getOpt());
+                if (option.hasLongOpt()) {
+                    stringBuilder.append(',').append("--").append(option.getLongOpt());
+                }
+            }
+
+            if (option.hasArg()) {
+                String argName = option.getArgName();
+                if (argName != null && argName.length() == 0) {
+                    stringBuilder.append(' ');
+                } else {
+                    stringBuilder.append(option.hasLongOpt() ? " " : " ");
+                    stringBuilder.append("<").append(argName != null ? option.getArgName() : "arg").append(">");
+                }
+            }
+
+            ircService.notice(nick, " %-20s %s", stringBuilder.toString(), option.getDescription() != null ? option.getDescription() : "");
+        }
     }
 }

@@ -29,6 +29,14 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) {
         persistenceService.loadChannels();
-        ircService.start();
+
+        Thread ircServiceThread = new Thread() {
+            @Override
+            public void run() {
+                ircService.run();
+            }
+        };
+
+        ircServiceThread.start();
     }
 }

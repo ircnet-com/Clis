@@ -2,6 +2,7 @@ package com.ircnet.service.clis.strategy;
 
 import com.ircnet.common.library.User;
 import com.ircnet.service.library.IRCService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -47,8 +48,7 @@ public class SQueryCommandHelp implements SQueryCommand {
             // HELP
             ircService.notice(from.getNick(), "%s help index", serviceName);
             ircService.notice(from.getNick(), "Use /SQUERY %s HELP <topic>", serviceName);
-            ircService.notice(from.getNick(), "Available topics: ADMIN, DIE, HASH, INFO, LIST, STATUS, VERSION");
-            ircService.notice(from.getNick(), "For LIST examples use /SQUERY %s HELP EXAMPLES", serviceName);
+            ircService.notice(from.getNick(), "Available topics: %s", StringUtils.join((squeryCommandMap).keySet(), ", "));
         }
         else {
             // HELP <command>
