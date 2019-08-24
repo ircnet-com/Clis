@@ -21,6 +21,7 @@ Find all channels whose name starts with "irc" and topic contains "http":
 /SQUERY Clis LIST -t http #irc*
 ```
 
+For more examples read this [test protocol](https://github.com/ircnet-com/Clis/blob/master/test-squery.md).
 
 # REST API
 The REST API can be used by websites, IRC clients and other third party applications to retrieve a list of IRC channels.
@@ -67,6 +68,8 @@ Find all channels whose name starts with "irc" and topic contains "http":
 ```
 curl -s "http://localhost:8080/#irc*?topic=http"
 ```
+
+For more examples read this [test protocol](https://github.com/ircnet-com/Clis/blob/master/test-rest.md).
 
 # Installation
 
