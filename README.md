@@ -30,12 +30,12 @@ The REST API can be used by websites, IRC clients and other third party applicat
 ## Parameters
 
 | Parameter     | Explanation                                 | Value             | Optional  |
-| ------------- |:-------------------------------------------:| -----------------:|----------:|
-| min           | Minimum users                               | Integer           | true      |
-| max           | Maximum users                               | Integer           | true      |
-| topic         | Topic of the channel must contain this text | String            | true      |
-| sortby        | Sort entries by this attribute              | name or usercount | true      |
-| order         | Defines the sort order                      | ASC or DESC       | true      |
+| ------------- |:-------------------------------------------:| ---------------------:|----------:|
+| min           | Minimum users                               | Integer               | true      |
+| max           | Maximum users                               | Integer               | true      |
+| topic         | Topic of the channel must contain this text | String                | true      |
+| sortby        | Sort entries by this attribute              | "name" or "usercount" | true      |
+| order         | Defines the sort order                      | "ASC" or "DESC"       | true      |
 
 ## Examples
 Find all channels:
