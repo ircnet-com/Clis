@@ -1,6 +1,4 @@
 $ curl -s http://localhost:8080/*
-<br/>
-
 ```
 [ {
   "name" : "#irc",
@@ -75,9 +73,9 @@ $ curl -s http://localhost:8080/*
 } ]
 ```
 
-$ curl -s "http://localhost:8080/*?min=2"
 <br/>
 
+$ curl -s "http://localhost:8080/*?min=2"
 ```
 [ {
   "name" : "#irc",
@@ -92,8 +90,10 @@ $ curl -s "http://localhost:8080/*?min=2"
 } ]
 ```
 
-$ curl -s "http://localhost:8080/*?min=2&max=2"
 <br/>
+
+$ curl -s "http://localhost:8080/*?min=2&max=2"
+
 
 ```
 [ {
@@ -103,8 +103,9 @@ $ curl -s "http://localhost:8080/*?min=2&max=2"
 } ]
 ```
 
-$ curl -s "http://localhost:8080/&*?topic=error"
 <br/>
+
+$ curl -s "http://localhost:8080/&*?topic=error"
 
 ```
 [ {
@@ -115,8 +116,9 @@ $ curl -s "http://localhost:8080/&*?topic=error"
 } ]
 ```
 
-$ curl -s "http://localhost:8080/*?min=2&sortBy=userCount&order=desc"
 <br/>
+
+$ curl -s "http://localhost:8080/*?min=2&sortBy=userCount&order=desc"
 
 ```
 [ {
@@ -131,9 +133,10 @@ $ curl -s "http://localhost:8080/*?min=2&sortBy=userCount&order=desc"
   "userCount" : 2
 } ]
 ```
+
+<br/>
 
 $ curl -s "http://localhost:8080/*?min=2&sortBy=userCount&order=asc"
-<br/>
 
 ```
 [ {
@@ -149,8 +152,9 @@ $ curl -s "http://localhost:8080/*?min=2&sortBy=userCount&order=asc"
 } ]
 ```
 
-$ curl -s "http://localhost:8080/*?min=2&sortBy=name&order=asc"
 <br/>
+
+$ curl -s "http://localhost:8080/*?min=2&sortBy=name&order=asc"
 
 ```
 [ {
