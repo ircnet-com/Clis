@@ -89,6 +89,7 @@ $ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.ja
 
 # TODO
 * Clean up job for obsolete or invisible channels
-* paging for rest api
-* (?) statistics like Alis (number of SQUERYs, LIST request, ..)
+* Paging for rest api
 
+# Contact
+#irc on IRCnet
