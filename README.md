@@ -48,11 +48,7 @@ To find all channels whose topic contains "help":
 TODO
 
 
-# TODO
-* Clean up job for obsolete or invisible channels
-* paging for rest api
-* (?) statistics like Alis (number of SQUERYs, LIST request, ..)
-
+#Installation
 
 Add a S line to ircd.conf:
 
@@ -60,7 +56,7 @@ Add a S line to ircd.conf:
 S%192.168.191.1%password%Clis%0xf000%1
 ```
 
-Create an application.properties by copying (this example)[https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties]
+Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties).
 ```
 $ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.jar 
 2019-08-24T04:33:27,191 INFO  [main] c.i.s.c.p.f.FilePersistenceServiceImpl: No channels could be loaded from channnels.json
@@ -69,3 +65,8 @@ $ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.ja
 2019-08-24T04:33:31,311 INFO  [Thread-2] c.i.s.c.e.YouAreServiceEventListener: Service connected as Clis@irc.localhost
 2019-08-24T04:33:31,553 INFO  [Thread-2] c.i.s.c.e.EndOfBurstEventListener: Parsed burst in 0 seconds. Received 16 channels.
 ```
+
+# TODO
+* Clean up job for obsolete or invisible channels
+* paging for rest api
+* (?) statistics like Alis (number of SQUERYs, LIST request, ..)
