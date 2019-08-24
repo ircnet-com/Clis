@@ -1,9 +1,9 @@
 package com.ircnet.service.clis.event;
 
-import com.ircnet.common.library.event.AbstractEventListener;
+import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.persistence.PersistenceService;
-import com.ircnet.service.library.events.EndOfBurstEvent;
+import com.ircnet.library.service.event.EndOfBurstEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

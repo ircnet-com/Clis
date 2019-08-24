@@ -1,8 +1,8 @@
 package com.ircnet.service.clis.event;
 
-import com.ircnet.common.library.event.AbstractEventListener;
+import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.service.clis.service.ChannelService;
-import com.ircnet.service.library.events.TopicEvent;
+import com.ircnet.library.service.event.TopicEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TopicEventListener extends AbstractEventListener<TopicEvent> {
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.ircnet.service.library.events.TopicEventListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicEventListener.class);
 
     @Autowired
     private ChannelService channelService;
