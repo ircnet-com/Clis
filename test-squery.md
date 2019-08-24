@@ -6,6 +6,7 @@
 07:16 -Clis(irc.localhost)- Available topics: ADMIN, HELP, INFO, LIST, VERSION
 ```
 <br/>
+
 /SQUERY Clis admin
 ```
 07:17 -Clis(irc.localhost)- Administrative info about Clis:
