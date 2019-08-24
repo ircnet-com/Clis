@@ -12,37 +12,44 @@
 07:17 -Clis(irc.localhost)- Administrative info about Clis:
 07:17 -Clis(irc.localhost)- IRCnet.com team <info@ircnet.com>
 ```
+<br/>
 
 /SQUERY Clis help admin
 ```
 07:21 -Clis(irc.localhost)- Shows administrative information
 ```
+<br/>
 
 /SQUERY Clis info
 ```
 07:22 -Clis(irc.localhost)- Channel List Service (Clis)
 07:22 -Clis(irc.localhost)- For more information visit https://www.ircnet.com
 ```
+<br/>
 
 /SQUERY Clis help info
 ```
 07:22 -Clis(irc.localhost)- Shows information about this software
 ```
+<br/>
 
 /SQUERY Clis version
 ```
 07:23 -Clis(irc.localhost)- Clis v1.0a1
 ```
+<br/>
 
 /SQUERY Clis help version
 ```
 07:24 -Clis(irc.localhost)- Shows the current version
 ```
+<br/>
 
 /SQUERY Clis help foo
 ```
 07:26 -Clis(irc.localhost)- No such help topic: "foo". Use /SQUERY Clis HELP
 ```
+<br/>
 
 /SQUERY Clis help list
 ```
@@ -53,6 +60,7 @@
 07:35 -Clis(irc.localhost)-  -s,--show <[m][t]>   show modes (m) and who set the topic (t)
 07:35 -Clis(irc.localhost)- For LIST examples use /SQUERY Clis HELP LIST EXAMPLES
 ```
+<br/>
 
 /SQUERY Clis HELP LIST EXAMPLES
 ```
@@ -64,11 +72,13 @@
 07:37 -Clis(irc.localhost)- /SQUERY Clis LIST * -show mt
 07:37 -Clis(irc.localhost)-   Lists all channels and shows the modes and the topic author
 ```
+<br/>
 
 /SQUERY Clis LIST
 ```
 07:38 -Clis(irc.localhost)- You did not specify a channel mask. Use /SQUERY Clis HELP LIST
 ```
+<br/>
 
 /SQUERY Clis LIST *
 ```
@@ -90,6 +100,7 @@
 07:42 -Clis(irc.localhost)- &WALLOPS                                            1: SERVER MESSAGES: wallops received
 07:42 -Clis(irc.localhost)- Found 14 visible channels.
 ```
+<br/>
 
 /SQUERY Clis LIST -min 2 *
 ```
@@ -98,6 +109,7 @@
 07:45 -Clis(irc.localhost)- #test                                               2: this is a test channel
 07:45 -Clis(irc.localhost)- Found 1 visible channels.
 ```
+<br/>
 
 /SQUERY Clis LIST -min 2 -s mt #test*
 ```
@@ -106,6 +118,7 @@
 08:00 -Clis(irc.localhost)- #test                                              +tn           2: this is a test channel (patrick)
 08:00 -Clis(irc.localhost)- Found 1 visible channels.
 ```
+<br/>
 
 /SQUERY Clis LIST -max 1 #*
 ```
@@ -114,6 +127,8 @@
 08:30 -Clis(irc.localhost)- #irc                                                1:
 08:30 -Clis(irc.localhost)- Found 1 visible channels.
 ```
+<br/>
+
 /SQUERY Clis LIST -t errors &*
 ```
 10:12 -Clis(irc.localhost)- Query summary: searching for channels matching "&*", topic containing "errors"
@@ -121,24 +136,28 @@
 10:12 -Clis(irc.localhost)- &ERRORS                                             1: SERVER MESSAGES: server errors
 10:12 -Clis(irc.localhost)- Found 1 visible channels.
 ```
+<br/>
 
 /SQUERY Clis LIST -min foo *
 ```
 10:09 -Clis(irc.localhost)- Argument of -min is not a number: 'foo'
 10:09 -Clis(irc.localhost)- Your query contains 1 errors. Use /SQUERY Clis HELP LIST
 ```
+<br/>
 
 /SQUERY Clis LIST -max foo *
 ```
 10:09 -Clis(irc.localhost)- Argument of -max is not a number: 'foo'
 10:09 -Clis(irc.localhost)- Your query contains 1 errors. Use /SQUERY Clis HELP LIST
 ```
+<br/>
 
 /SQUERY Clis LIST -show foo *
 ```
 10:10 -Clis(irc.localhost)- Invalid -show flags 'foo'. Allowed flags: 'mt'
 10:10 -Clis(irc.localhost)- Your query contains 1 errors. Use /SQUERY Clis HELP LIST
 ```
+<br/>
 
 /SQUERY Clis LIST -t errors
 ```
