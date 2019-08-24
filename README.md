@@ -16,7 +16,7 @@ Find all channels whose user count is at least 100 but not greater than 200:
 /SQUERY Clis LIST -min 100 -max 200 *
 ```
 
-Find all channels whose name starts with "irc" and topic contains "http":
+Find all channels whose name starts with "#irc" and topic contains "http":
 ```
 /SQUERY Clis LIST -t http #irc*
 ```
