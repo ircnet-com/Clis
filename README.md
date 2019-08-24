@@ -1,7 +1,5 @@
 # About
-Clis (Channel list service) is a service to list IRC channels. It replaces the deprecated /LIST command and also offers a REST API.
-
-Clis is basically a remake of [Alis](https://www.ircnet.com/articles/alis) written in Java.
+Clis (Channel list service) is a service to list IRC channels. It replaces the deprecated /LIST command and also offers a REST API. It is basically a remake of [Alis](https://www.ircnet.com/articles/alis) written in Java.
 
 # IRC Commands
 Show help:
