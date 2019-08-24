@@ -32,8 +32,6 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public void updateOrInsert(String name, int userCount) {
-        Assert.isTrue(userCount > 0, "User count must be greater than zero");
-
         ChannelData channelData = channelMap.get(name);
 
         if (channelData == null) {
@@ -66,7 +64,10 @@ public class ChannelServiceImpl implements ChannelService {
         }
 
         channelData.setTopic(topic);
-        channelData.setTopicFrom(from);
+
+        if(!(from == null && channelData.getTopic().equals(topic))) {
+            channelData.setTopicFrom(from);
+        }
     }
 
     @Override
@@ -76,26 +77,26 @@ public class ChannelServiceImpl implements ChannelService {
 
         Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
 
-        /**
+        /*
          * Remove channels which have no users.
          * These channels are stored only to keep the topic.
          */
         stream = stream.filter(e -> e.getValue().getUserCount() > 0);
 
-        /**
+        /*
          * Remove secret and private channels.
          * These channels are also stored only to keep the topic.
          */
         stream = stream.filter(e ->  e.getValue().getModes() == null || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
 
-        /**
+        /*
          * Apply mask filter.
          */
         if(!StringUtils.isBlank(mask)) {
             stream = stream.filter(e -> FilenameUtils.wildcardMatch(e.getValue().getName(), mask, IOCase.INSENSITIVE));
         }
 
-        /**
+        /*
          * Apply user count filters (optional).
          */
         if(minUsers != null) {
@@ -106,7 +107,7 @@ public class ChannelServiceImpl implements ChannelService {
             stream = stream.filter(e -> e.getValue().getUserCount() <= maxUsers);
         }
 
-        /**
+        /*
          * Apply topic filter (optional).
          */
         if(topic != null) {
@@ -115,7 +116,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
 
-        /**
+        /*
          * Sorting.
          */
         Comparator<ChannelData> comparator;

@@ -38,7 +38,6 @@ public class ClisRestController {
                                            @RequestParam(name = "max", required = false) Integer maxUsers,
                                            @RequestParam(name = "sortby", required = false, defaultValue = "name") String sortBy,
                                            @RequestParam(name = "order", required = false, defaultValue = "ASC") String sortOrder) {
-        // TODO: validate sortBy and sortOrder
         return channelService.find(mask, topic, minUsers, maxUsers, sortBy, sortOrder);
     }
 }

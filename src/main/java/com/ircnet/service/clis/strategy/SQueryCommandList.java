@@ -68,7 +68,7 @@ public class SQueryCommandList implements SQueryCommand {
                 .longOpt("topic")
                 .hasArg()
                 .argName("string")
-                .desc("topic of the channel shall contain string")
+                .desc("topic of the channel must contain this string")
                 .build();
 
         options.addOption(topic);
@@ -142,7 +142,7 @@ public class SQueryCommandList implements SQueryCommand {
                 String flags = commandLine.getOptionValue("show");
 
                 if (!flags.matches("^[mt]+$")) {
-                    ircService.notice(nick, "Invalid -show flags '%s'. Allowed flags: 'mt", flags);
+                    ircService.notice(nick, "Invalid -show flags '%s'. Allowed flags: 'mt'", flags);
                     errorCount++;
                 } else {
                     if (flags.indexOf('m') != -1) {
@@ -189,9 +189,9 @@ public class SQueryCommandList implements SQueryCommand {
                 }
 
                 ircService.notice(nick, response.toString());
-
-                ircService.notice(nick, "Found %d visible channels.", actualResultCount);
             }
+
+            ircService.notice(nick, "Found %d visible channels.", actualResultCount);
         } catch (ParseException e) {
             LOGGER.error("Failed to parse '{}' from {}", message, from, e);
         }
@@ -203,13 +203,13 @@ public class SQueryCommandList implements SQueryCommand {
         querySummary.append("\"");
 
         if (minUsers != null) {
-            querySummary.append(", min ");
+            querySummary.append(", minimum ");
             querySummary.append(minUsers);
             querySummary.append(" users");
         }
 
         if (maxUsers != null) {
-            querySummary.append(", max ");
+            querySummary.append(", maximum ");
             querySummary.append(maxUsers);
             querySummary.append(" users");
         }
@@ -225,24 +225,39 @@ public class SQueryCommandList implements SQueryCommand {
         }
 
         if (showTopicAuthor) {
-            querySummary.append(", showing who set topic");
+            querySummary.append(", showing who set the topic");
         }
 
         return querySummary.toString();
     }
 
     /**
-     * Handler for: /SQUERY Clis HELP LIST
+     * Handler for: /SQUERY Clis HELP LIST and /SQUERY Clis HELP LIST EXAMPLES
      *
      * @param from User who sent the SQUERY
-     * @param message "HELP LIST"
+     * @param message "HELP LIST [EXAMPLES]"
      */
     @Override
     public void processHelp(User from, String message) {
-        ircService.notice(from.getNick(), "Usage: /SQUERY %s [options] <mask>", serviceName);
-        sendOptionSyntax(from.getNick(), options);
-        ircService.notice(from.getNick(), "Example: TODO ..", serviceName);
-        ircService.notice(from.getNick(), "TODO ..", serviceName);
+        String nick = from.getNick();
+
+        String[] args = message.split(" ");
+
+        if (args.length > 2 && args[2].equalsIgnoreCase("EXAMPLES")) {
+            ircService.notice(nick, "LIST Examples:");
+            ircService.notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", serviceName);
+            ircService.notice(nick, "  Lists all channels which start with #ircnet (#ircnet, #ircnet.com, ..) and have at least 10 users");
+
+            ircService.notice(nick, "/SQUERY %s LIST -min 10 -t http *", serviceName);
+            ircService.notice(nick, "  Lists all channels whose topic contains \"http\" and have at least 10 users");
+
+            ircService.notice(nick, "/SQUERY %s LIST -show mt *", serviceName);
+            ircService.notice(nick, "  Lists all channels and shows the modes and the topic author");
+        } else {
+            ircService.notice(nick, "Usage: /SQUERY %s [options] <mask>", serviceName);
+            sendOptionSyntax(nick, options);
+            ircService.notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", serviceName);
+        }
     }
 
     private void sendOptionSyntax(String nick, Options options) {
