@@ -48,9 +48,9 @@ Find all channels whose user count is at least 100 but not greater than 200:
 curl -s "http://localhost:8080/*?min=100&max=200"
 ```
 
-Find all channels whose topic contains "help":
+Find all channels whose name starts with "irc" and topic contains "http":
 ```
-curl -s "http://localhost:8080/*?topic=help"
+curl -s "http://localhost:8080/#irc*?topic=http"
 ```
 
 # Installation
