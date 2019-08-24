@@ -1,8 +1,8 @@
 package com.ircnet.service.clis.strategy;
 
-import com.ircnet.common.library.User;
+import com.ircnet.library.common.User;
 import com.ircnet.service.clis.Constants;
-import com.ircnet.service.library.IRCService;
+import com.ircnet.library.service.IRCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

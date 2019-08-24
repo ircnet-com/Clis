@@ -1,9 +1,9 @@
 package com.ircnet.service.clis.event;
 
-import com.ircnet.common.library.event.AbstractEventListener;
+import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.service.clis.strategy.SQueryCommand;
-import com.ircnet.service.library.IRCService;
-import com.ircnet.service.library.events.SQueryEvent;
+import com.ircnet.library.service.IRCService;
+import com.ircnet.library.service.event.SQueryEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

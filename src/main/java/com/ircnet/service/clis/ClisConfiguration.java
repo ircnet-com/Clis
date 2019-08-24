@@ -1,10 +1,10 @@
 package com.ircnet.service.clis;
 
-import com.ircnet.common.library.configuration.IRCServerModel;
-import com.ircnet.common.library.configuration.ServerModel;
+import com.ircnet.library.common.configuration.IRCServerModel;
+import com.ircnet.library.common.configuration.ServerModel;
 import com.ircnet.service.clis.strategy.*;
-import com.ircnet.service.library.IRCService;
-import com.ircnet.service.library.ServiceConfigurationModel;
+import com.ircnet.library.service.IRCService;
+import com.ircnet.library.service.ServiceConfigurationModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

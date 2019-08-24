@@ -1,7 +1,7 @@
 package com.ircnet.service.clis.event;
 
-import com.ircnet.common.library.event.AbstractEventListener;
-import com.ircnet.service.library.events.YouAreServiceEvent;
+import com.ircnet.library.common.event.AbstractEventListener;
+import com.ircnet.library.service.event.YouAreServiceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

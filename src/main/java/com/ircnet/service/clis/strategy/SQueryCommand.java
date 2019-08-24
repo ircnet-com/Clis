@@ -1,6 +1,6 @@
 package com.ircnet.service.clis.strategy;
 
-import com.ircnet.common.library.User;
+import com.ircnet.library.common.User;
 
 /**
  * Handler for:

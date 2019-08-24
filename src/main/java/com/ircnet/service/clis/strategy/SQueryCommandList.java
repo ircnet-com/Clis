@@ -1,9 +1,9 @@
 package com.ircnet.service.clis.strategy;
 
-import com.ircnet.common.library.User;
+import com.ircnet.library.common.User;
 import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.service.ChannelService;
-import com.ircnet.service.library.IRCService;
+import com.ircnet.library.service.IRCService;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

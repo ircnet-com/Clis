@@ -1,7 +1,7 @@
 package com.ircnet.service.clis;
 
 import com.ircnet.service.clis.persistence.PersistenceService;
-import com.ircnet.service.library.IRCService;
+import com.ircnet.library.service.IRCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
