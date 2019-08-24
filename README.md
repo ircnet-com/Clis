@@ -49,15 +49,12 @@ TODO
 
 
 # TODO
-* complete LIST command for SQUERY
-* HELP command
 * Clean up job for obsolete or invisible channels
-* (?) remove color codes from JSON
 * paging for rest api
 * (?) statistics like Alis (number of SQUERYs, LIST request, ..)
 
 
-Add an S-Line to ircd.conf like:
+Add an S-Line to ircd.conf:
 
 ```
 S%192.168.191.1%password%Clis%0xf000%1
