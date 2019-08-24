@@ -77,7 +77,7 @@ curl -s "http://localhost:8080/#irc*?topic=http"
 S%127.0.0.1%password%Clis%0xf000%1
 ```
 2. Download the JAR
-3. Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties).
+3. Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties)
 4. Start the application
 ```
 $ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.jar 
