@@ -1,0 +1,9 @@
+services:
+  clis:
+    build: .
+    user: ircservices
+    ports:
+      - "8080:8080"
+    volumes:
+      - /opt/clis/application.properties:/srv/application.properties
+      # - /opt/clis/channels.json:/srv/channels.json
