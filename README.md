@@ -71,13 +71,13 @@ curl -s "http://localhost:8080/#irc*?topic=http"
 
 # Installation
 
-Add a S line to ircd.conf:
-
+1. Add a S line to ircd.conf:
 ```
 S%192.168.191.1%password%Clis%0xf000%1
 ```
-
-Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties).
+2. Download the JAR
+3. Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties).
+4. Start the application
 ```
 $ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.jar 
 2019-08-24T04:33:27,191 INFO  [main] c.i.s.c.p.f.FilePersistenceServiceImpl: No channels could be loaded from channnels.json
@@ -91,3 +91,4 @@ $ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.ja
 * Clean up job for obsolete or invisible channels
 * paging for rest api
 * (?) statistics like Alis (number of SQUERYs, LIST request, ..)
+
