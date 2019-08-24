@@ -35,7 +35,7 @@ The REST API can be used by websites, IRC clients and other third party applicat
 | max           | Maximum users                               | Integer               | true      |
 | topic         | Topic of the channel must contain this text | String                | true      |
 | sortby        | Sort entries by this attribute              | "name" or "usercount" | true      |
-| order         | Defines the sort order                      | "ASC" or "DESC"       | true      |
+| order         | Defines the sort order                      | "asc" or "desc"       | true      |
 
 ## Examples
 Find all channels:
