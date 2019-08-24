@@ -32,6 +32,7 @@ The REST API can be used by websites, IRC clients and other third party applicat
 {
   "name" : "#irc",
   "topic" : "visit http://www.ircnet.com",
+  "topicFrom" : "patrick",
   "modes" : "+nt",
   "userCount" : 42
 }, 
@@ -73,7 +74,7 @@ curl -s "http://localhost:8080/#irc*?topic=http"
 
 1. Add a S line to ircd.conf:
 ```
-S%192.168.191.1%password%Clis%0xf000%1
+S%127.0.0.1%password%Clis%0xf000%1
 ```
 2. Download the JAR
 3. Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties).
