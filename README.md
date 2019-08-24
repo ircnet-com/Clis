@@ -38,14 +38,14 @@ The REST API can be used by websites, IRC clients and other third party applicat
 | order         | Defines the sort order                      | ASC or DESC       | true      |
 
 ## Examples
-To find all channels whose name contains "irc":
-TODO
+To find all channels:
+```curl -s http://localhost:8080/*```
 
-To find all channels (mask: *) whose user count is at least 100 but not greater than 200:
-TODO
+To find all channels whose user count is at least 100 but not greater than 200:
+curl -s "http://localhost:8080/*?min=100&max=200"
 
 To find all channels whose topic contains "help":
-TODO
+curl -s "http://localhost:8080/*?topic=help"
 
 
 # Installation
