@@ -48,7 +48,7 @@ To find all channels whose topic contains "help":
 TODO
 
 
-#Installation
+# Installation
 
 Add a S line to ircd.conf:
 
