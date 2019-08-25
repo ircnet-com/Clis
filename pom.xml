@@ -22,7 +22,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.ircnet.library.service</groupId>
+            <groupId>com.ircnet.library</groupId>
             <artifactId>irc-library-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
