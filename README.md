@@ -78,10 +78,10 @@ For more examples read this [test protocol](https://github.com/ircnet-com/Clis/b
 S%127.0.0.1%password%Clis%0xf000%1
 ```
 2. Download the [JAR](https://github.com/ircnet-com/Clis/releases/download/0.1-alpha/clis-1.0-SNAPSHOT.jar)
-3. Create an application.properties by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties)
+3. Create an application.properties file by copying [this example](https://github.com/ircnet-com/Clis/blob/master/src/main/resources/application.properties) in the directory from which the application is run
 4. Start the application
 ```
-$ java -jar -Dspring.config.location=application.properties clis-1.0-SNAPSHOT.jar 
+$ java -jar clis-1.0-SNAPSHOT.jar 
 2019-08-24T04:33:27,191 INFO  [main] c.i.s.c.p.f.FilePersistenceServiceImpl: No channels could be loaded from channnels.json
 2019-08-24T04:33:27,515 INFO  [Thread-2] c.i.c.l.c.IRCConnection: Connecting to 127.0.0.1 (127.0.0.1) port 6667
 2019-08-24T04:33:27,520 INFO  [Thread-2] c.i.s.l.e.ConnectionStatusChangedEventListener: Connection established
