@@ -31,19 +31,11 @@ public class ClisRestController {
     /**
      *  Finds channels by given criteria.
      *
-     * @param mask Channel mask (mandatory). Supports wildcards '*' and '?'. Examples: #*irc*, #?, *
-     * @param topic Topic of the channel must contain this text (optional). Wildcards are not supported.
-     * @param minUsers Minimum users (optional)
-     * @param maxUsers Maximum users (optional)
-     *
-     * @return A list of channels
+     * @return JSON response containing a list of channels and some meta data
      */
-    @RequestMapping(value = { "/{mask}" })
+    @RequestMapping(value = "/")
     @CrossOrigin(origins = "*")
-    public DTResponse list(@RequestBody /*@Valid*/ DTRequest input, @PathVariable String mask,
-                           @RequestParam(name = "topic", required = false) String topic,
-                           @RequestParam(name = "min", required = false) Integer minUsers,
-                           @RequestParam(name = "max", required = false) Integer maxUsers) {
+    public DTResponse list(@RequestBody DTRequest input) {
         String channelFilter = null;
         String topicFilter = null;
         SortBy sortBy = SortBy.NAME;
@@ -59,7 +51,6 @@ public class ClisRestController {
                 if (column != null) {
                     sortBy = SortBy.valueOf(StringUtils.upperCase(column.getData()));
                     sortOrder = SortOrder.valueOf(StringUtils.upperCase(input.getOrder().get(0).getDir()));
-                    System.out.println("Sorting by " + sortBy + " order " + sortOrder); // TODO: remove
                 }
             }
         }
