@@ -1,6 +1,8 @@
 package com.ircnet.service.clis.service.impl;
 
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.constant.SortBy;
+import com.ircnet.service.clis.constant.SortOrder;
 import com.ircnet.service.clis.service.ChannelService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
@@ -75,7 +77,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder) {
+    public Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder) {
         LOGGER.debug("Filtering channels for query: topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}", topic, minUsers, maxUsers, sortBy);
         Instant start = Instant.now();
 
@@ -125,16 +127,91 @@ public class ChannelServiceImpl implements ChannelService {
          */
         Comparator<ChannelData> comparator;
 
-        if("usercount".equalsIgnoreCase(sortBy)) {
-            comparator = Comparator.comparingInt(ChannelData::getUserCount);
+        switch (sortBy) {
+            case USERCOUNT:
+                comparator = Comparator.comparing(ChannelData::getUserCount);
+                break;
 
-        }
-        else {
-            // Sort by name
-            comparator = Comparator.comparing(ChannelData::getName);
+            case NAME:
+            default:
+                comparator = Comparator.comparing(ChannelData::getName);
+                break;
         }
 
-        if("desc".equalsIgnoreCase(sortOrder)) {
+        if(sortOrder == SortOrder.DESC) {
+            comparator = comparator.reversed();
+        }
+
+        channelDataStream = channelDataStream.sorted(comparator);
+
+        List<ChannelData> channelList = channelDataStream.collect(Collectors.toList());
+
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        LOGGER.debug("Found {} channels in {} seconds", channelList.size(), timeElapsed / 1000.0);
+
+        return channelList;
+    }
+
+    @Override
+    public Collection<ChannelData> filterDataTable(String globalFilter, String channelFilter, String topicFilter, SortBy sortBy, SortOrder sortOrder) {
+        LOGGER.debug("Filtering channels for query: topic={} sortBy={} sortOrder={}", topicFilter, sortBy);
+        Instant start = Instant.now();
+
+        Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
+
+        /*
+         * Remove channels which have no users.
+         * These channels are stored only to keep the topic.
+         */
+//        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
+
+        /*
+         * Remove secret and private channels.
+         * These channels are also stored only to keep the topic.
+         */
+        stream = stream.filter(e ->  e.getValue().getModes() == null || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
+
+        /*
+         * Apply global filter. Either channel name or topic must match.
+         */
+        if(!StringUtils.isBlank(globalFilter)) {
+            stream = stream.filter(e -> (e.getValue().getName().contains(globalFilter)) || (e.getValue().getTopic() != null && e.getValue().getTopic().contains(globalFilter)));
+        }
+
+        /*
+         * Apply channel name filter.
+         */
+        if(channelFilter != null) {
+            stream = stream.filter(e -> e.getValue().getName() != null && e.getValue().getName().contains(channelFilter));
+        }
+
+        /*
+         * Apply topic filter.
+         */
+        if(topicFilter != null) {
+            stream = stream.filter(e -> e.getValue().getTopic() != null && e.getValue().getTopic().contains(topicFilter));
+        }
+
+        Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
+
+        /*
+         * Sorting.
+         */
+        Comparator<ChannelData> comparator;
+
+        switch (sortBy) {
+            case USERCOUNT:
+                comparator = Comparator.comparing(ChannelData::getUserCount);
+                break;
+
+            case NAME:
+            default:
+                comparator = Comparator.comparing(ChannelData::getName);
+                break;
+        }
+
+        if(sortOrder == SortOrder.DESC) {
             comparator = comparator.reversed();
         }
 
@@ -151,7 +228,8 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public boolean isObsoleteChannel(ChannelData channelData) {
-        return channelData.getUserCount() == 0 && (channelData.getModificationDate() == null
-                || (System.currentTimeMillis() - channelData.getModificationDate().getTime() > emptyChannelMaxAge));
+        return false;
+//        return channelData.getUserCount() == 0 && (channelData.getModificationDate() == null
+//                || (System.currentTimeMillis() - channelData.getModificationDate().getTime() > emptyChannelMaxAge));
     }
 }
