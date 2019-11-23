@@ -1,6 +1,8 @@
 package com.ircnet.service.clis.service;
 
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.constant.SortBy;
+import com.ircnet.service.clis.constant.SortOrder;
 
 import java.util.Collection;
 
@@ -46,7 +48,20 @@ public interface ChannelService {
    *
    * @return A list of channels, may be empty, never null
    */
-  Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, String sortBy, String sortOrder);
+  Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder);
+
+  /**
+   * Finds channels by given criteria.
+   *
+   * @param globalFilter Name or topic of the channel must contain this text.
+   * @param channelFilter Name of the channel must contain this text.
+   * @param topicFilter Topic of the channel must contain this text.
+   * @param sortBy Sort entries by this attribute (optional). Allowed values: "name" and "userCount"
+   * @param sortOrder Defines the sort order (optional). Allowed values: "asc" and "desc"
+   *
+   * @return A list of channels, may be empty, never null
+   */
+  Collection<ChannelData> filterDataTable(String globalFilter, String channelFilter, String topicFilter, SortBy sortBy, SortOrder sortOrder);
 
   /**
    * Checks if a channel is obsolete.
