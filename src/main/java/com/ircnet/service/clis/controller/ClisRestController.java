@@ -2,6 +2,7 @@ package com.ircnet.service.clis.controller;
 
 import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.constant.FilterBy;
+import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.constant.SortBy;
 import com.ircnet.service.clis.constant.SortOrder;
 import com.ircnet.service.clis.controller.datatables.*;
@@ -80,7 +81,7 @@ public class ClisRestController {
             }
         }
 
-        Collection<ChannelData> channels = channelService.filterDataTable(searchTerm, channelFilter, topicFilter, sortBy, sortOrder);
+        Collection<ChannelData> channels = channelService.find(searchTerm, channelFilter, MatchType.CONTAINS, topicFilter, null, null, sortBy, sortOrder);
 
         List<ChannelData> sublist = new ArrayList<>(channels).subList(input.getStart(), Math.min(input.getStart() + channels.size()-input.getStart(), input.getStart() + input.getLength()));
 
