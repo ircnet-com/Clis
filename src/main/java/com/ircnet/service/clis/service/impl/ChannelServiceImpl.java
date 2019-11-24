@@ -88,7 +88,7 @@ public class ChannelServiceImpl implements ChannelService {
          * Remove channels which have no users.
          * These channels are stored only to keep the topic.
          */
-//        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
+        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
 
         /*
          * Remove secret and private channels.
@@ -161,8 +161,7 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public boolean isObsoleteChannel(ChannelData channelData) {
-        return false;
-//        return channelData.getUserCount() == 0 && (channelData.getModificationDate() == null
-//                || (System.currentTimeMillis() - channelData.getModificationDate().getTime() > emptyChannelMaxAge));
+        return channelData.getUserCount() == 0 && (channelData.getModificationDate() == null
+                || (System.currentTimeMillis() - channelData.getModificationDate().getTime() > emptyChannelMaxAge));
     }
 }
