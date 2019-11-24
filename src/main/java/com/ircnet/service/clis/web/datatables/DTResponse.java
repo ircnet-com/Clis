@@ -1,8 +1,13 @@
-package com.ircnet.service.clis.controller.datatables;
+package com.ircnet.service.clis.web.datatables;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.List;
 
 /**
  * https://datatables.net/manual/server-side
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DTResponse<T> {
   /**
    * The draw counter that this object is a response to - from the draw parameter sent as part of the data request.
@@ -24,10 +29,10 @@ public class DTResponse<T> {
   private Integer recordsFiltered;
 
   /**
-   * The data to be displayed in the table. This is an array of data source objects, one for each row, which will be
+   * The data to be displayed in the table. This is a list of data source objects, one for each row, which will be
    * used by DataTables. Note that this parameter's name can be changed using the ajax option's dataSrc property.
    */
-  private T[] data;
+  private List<T> data;
 
   /**
    * Optional: If an error occurs during the running of the server-side processing script, you can inform the user of
@@ -39,7 +44,7 @@ public class DTResponse<T> {
   public DTResponse() {
   }
 
-  public DTResponse(Integer draw, Integer recordsTotal, Integer recordsFiltered, T[] data, String error) {
+  public DTResponse(Integer draw, Integer recordsTotal, Integer recordsFiltered, List<T> data, String error) {
     this.draw = draw;
     this.recordsTotal = recordsTotal;
     this.recordsFiltered = recordsFiltered;
@@ -47,7 +52,7 @@ public class DTResponse<T> {
     this.error = error;
   }
 
-  public DTResponse(Integer draw, Integer recordsTotal, Integer recordsFiltered, T[] data) {
+  public DTResponse(Integer draw, Integer recordsTotal, Integer recordsFiltered, List<T> data) {
     this(draw, recordsTotal, recordsFiltered, data, null);
   }
 
@@ -75,11 +80,11 @@ public class DTResponse<T> {
     this.recordsFiltered = recordsFiltered;
   }
 
-  public T[] getData() {
+  public List<T> getData() {
     return data;
   }
 
-  public void setData(T[] data) {
+  public void setData(List<T> data) {
     this.data = data;
   }
 

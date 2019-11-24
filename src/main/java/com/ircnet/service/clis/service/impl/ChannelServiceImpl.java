@@ -129,6 +129,10 @@ public class ChannelServiceImpl implements ChannelService {
          */
         Comparator<ChannelData> comparator;
 
+        if(sortBy == null) {
+          sortBy = SortBy.NAME;
+        }
+
         switch (sortBy) {
             case USERCOUNT:
                 comparator = Comparator.comparing(ChannelData::getUserCount);
