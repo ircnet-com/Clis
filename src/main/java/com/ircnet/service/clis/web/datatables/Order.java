@@ -1,8 +1,4 @@
-package com.ircnet.service.clis.controller.datatables;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+package com.ircnet.service.clis.web.datatables;
 
 /**
  * https://datatables.net/manual/server-side
