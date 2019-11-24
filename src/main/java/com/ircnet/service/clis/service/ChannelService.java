@@ -41,7 +41,7 @@ public interface ChannelService {
    * Finds channels by given criteria.
    *
    * @param globalFilter Name or topic of the channel must contain this text.
-   * @param channelFilter Name of the channel. Supports wildcards '*' and '?'. Examples: #*irc*, #?, *
+   * @param channelFilter Name of the channel. chanFilterMatchType decides now this attribute is processed.
    * @param chanFilterMatchType Determines how to apply the channelFilter: e.g. via regular expressions
    * @param topicFilter Topic of the channel must contain this text.
    * @param minUsers Minimum users. Can be null.

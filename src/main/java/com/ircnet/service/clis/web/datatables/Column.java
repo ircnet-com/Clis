@@ -1,4 +1,4 @@
-package com.ircnet.service.clis.controller.datatables;
+package com.ircnet.service.clis.web.datatables;
 
 
 /**

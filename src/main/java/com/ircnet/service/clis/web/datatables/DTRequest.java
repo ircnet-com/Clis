@@ -1,9 +1,6 @@
-package com.ircnet.service.clis.controller.datatables;
+package com.ircnet.service.clis.web.datatables;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TODO
@@ -46,68 +43,6 @@ public class DTRequest {
 
   public DTRequest() {
   }
-
-  /**
-   *
-   * @return a {@link Map} of {@link Column} indexed by name
-   */
-/*  public Map<String, Column> getColumnsAsMap() {
-    Map<String, Column> map = new HashMap<>();
-    for (Column column : columns) {
-      map.put(column.getData(), column);
-    }
-    return map;
-  }*/
-
-  /**
-   * Find a column by its name
-   *
-   * @param columnName the name of the column
-   * @return the given Column, or <code>null</code> if not found
-   */
-/*  public Column getColumn(String columnName) {
-    if (columnName == null) {
-      return null;
-    }
-    for (Column column : columns) {
-      if (columnName.equals(column.getData())) {
-        return column;
-      }
-    }
-    return null;
-  }*/
-
-  /**
-   * Add a new column
-   *
-   * @param columnName the name of the column
-   * @param searchable whether the column is searchable or not
-   * @param orderable whether the column is orderable or not
-   * @param searchValue if any, the search value to apply
-   */
-/*  public void addColumn(String columnName, boolean searchable, boolean orderable,
-                        String searchValue) {
-    this.columns.add(new Column(columnName, "", searchable, orderable,
-        new Search(searchValue, false)));
-  }*/
-
-  /**
-   * Add an order on the given column
-   *
-   * @param columnName the name of the column
-   * @param ascending whether the sorting is ascending or descending
-   */
-/*  public void addOrder(String columnName, boolean ascending) {
-    if (columnName == null) {
-      return;
-    }
-    for (int i = 0; i < columns.size(); i++) {
-      if (!columnName.equals(columns.get(i).getData())) {
-        continue;
-      }
-      order.add(new Order(i, ascending ? "asc" : "desc"));
-    }
-  }*/
 
   public Integer getDraw() {
     return draw;
