@@ -1,6 +1,7 @@
 package com.ircnet.service.clis.service;
 
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.constant.SortBy;
 import com.ircnet.service.clis.constant.SortOrder;
 
@@ -39,8 +40,10 @@ public interface ChannelService {
   /**
    * Finds channels by given criteria.
    *
-   * @param mask Channel mask (mandatory). Supports wildcards '*' and '?'. Examples: #*irc*, #?, *
-   * @param topic Topic of the channel must contain this text. Can be null. Wildcards are not supported.
+   * @param globalFilter Name or topic of the channel must contain this text.
+   * @param channelFilter Name of the channel. Supports wildcards '*' and '?'. Examples: #*irc*, #?, *
+   * @param chanFilterMatchType Determines how to apply the channelFilter: e.g. via regular expressions
+   * @param topicFilter Topic of the channel must contain this text.
    * @param minUsers Minimum users. Can be null.
    * @param maxUsers Maximum users. Can be null.
    * @param sortBy Sort entries by this attribute (optional). Allowed values: "name" and "userCount"
@@ -48,20 +51,7 @@ public interface ChannelService {
    *
    * @return A list of channels, may be empty, never null
    */
-  Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder);
-
-  /**
-   * Finds channels by given criteria.
-   *
-   * @param globalFilter Name or topic of the channel must contain this text.
-   * @param channelFilter Name of the channel must contain this text.
-   * @param topicFilter Topic of the channel must contain this text.
-   * @param sortBy Sort entries by this attribute (optional). Allowed values: "name" and "userCount"
-   * @param sortOrder Defines the sort order (optional). Allowed values: "asc" and "desc"
-   *
-   * @return A list of channels, may be empty, never null
-   */
-  Collection<ChannelData> filterDataTable(String globalFilter, String channelFilter, String topicFilter, SortBy sortBy, SortOrder sortOrder);
+  Collection<ChannelData> find(String globalFilter, String channelFilter, MatchType chanFilterMatchType, String topicFilter, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder);
 
   /**
    * Checks if a channel is obsolete.

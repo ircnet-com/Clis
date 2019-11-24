@@ -1,6 +1,7 @@
 package com.ircnet.service.clis.service.impl;
 
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.constant.SortBy;
 import com.ircnet.service.clis.constant.SortOrder;
 import com.ircnet.service.clis.service.ChannelService;
@@ -77,85 +78,8 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public Collection<ChannelData> find(String mask, String topic, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder) {
-        LOGGER.debug("Filtering channels for query: topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}", topic, minUsers, maxUsers, sortBy);
-        Instant start = Instant.now();
-
-        Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
-
-        /*
-         * Remove channels which have no users.
-         * These channels are stored only to keep the topic.
-         */
-        stream = stream.filter(e -> e.getValue().getUserCount() > 0);
-
-        /*
-         * Remove secret and private channels.
-         * These channels are also stored only to keep the topic.
-         */
-        stream = stream.filter(e ->  e.getValue().getModes() == null || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
-
-        /*
-         * Apply mask filter.
-         */
-        if(!StringUtils.isBlank(mask)) {
-            stream = stream.filter(e -> FilenameUtils.wildcardMatch(e.getValue().getName(), mask, IOCase.INSENSITIVE));
-        }
-
-        /*
-         * Apply user count filters (optional).
-         */
-        if(minUsers != null) {
-            stream = stream.filter(e -> e.getValue().getUserCount() >= minUsers);
-        }
-
-        if(maxUsers != null) {
-            stream = stream.filter(e -> e.getValue().getUserCount() <= maxUsers);
-        }
-
-        /*
-         * Apply topic filter (optional).
-         */
-        if(topic != null) {
-            stream = stream.filter(e -> e.getValue().getTopic() != null && e.getValue().getTopic().contains(topic));
-        }
-
-        Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
-
-        /*
-         * Sorting.
-         */
-        Comparator<ChannelData> comparator;
-
-        switch (sortBy) {
-            case USERCOUNT:
-                comparator = Comparator.comparing(ChannelData::getUserCount);
-                break;
-
-            case NAME:
-            default:
-                comparator = Comparator.comparing(ChannelData::getName);
-                break;
-        }
-
-        if(sortOrder == SortOrder.DESC) {
-            comparator = comparator.reversed();
-        }
-
-        channelDataStream = channelDataStream.sorted(comparator);
-
-        List<ChannelData> channelList = channelDataStream.collect(Collectors.toList());
-
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        LOGGER.debug("Found {} channels in {} seconds", channelList.size(), timeElapsed / 1000.0);
-
-        return channelList;
-    }
-
-    @Override
-    public Collection<ChannelData> filterDataTable(String globalFilter, String channelFilter, String topicFilter, SortBy sortBy, SortOrder sortOrder) {
-        LOGGER.debug("Filtering channels for query: topic={} sortBy={} sortOrder={}", topicFilter, sortBy);
+    public Collection<ChannelData> find(String globalFilter, String channelFilter, MatchType chanFilterMatchType, String topicFilter, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder) {
+        LOGGER.debug("Filtering channels for query: globalFilter={} channelFilter={} topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}", globalFilter, channelFilter, topicFilter, minUsers, maxUsers, sortBy);
         Instant start = Instant.now();
 
         Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
@@ -182,14 +106,19 @@ public class ChannelServiceImpl implements ChannelService {
         /*
          * Apply channel name filter.
          */
-        if(channelFilter != null) {
-            stream = stream.filter(e -> e.getValue().getName() != null && e.getValue().getName().contains(channelFilter));
+        if(!StringUtils.isBlank(channelFilter)) {
+            if(chanFilterMatchType == MatchType.REG_EXP) {
+                stream = stream.filter(e -> FilenameUtils.wildcardMatch(e.getValue().getName(), channelFilter, IOCase.INSENSITIVE));
+            }
+            else {
+                stream = stream.filter(e -> e.getValue().getName() != null && e.getValue().getName().contains(channelFilter));
+            }
         }
 
         /*
          * Apply topic filter.
          */
-        if(topicFilter != null) {
+        if(!StringUtils.isBlank(topicFilter)) {
             stream = stream.filter(e -> e.getValue().getTopic() != null && e.getValue().getTopic().contains(topicFilter));
         }
 
