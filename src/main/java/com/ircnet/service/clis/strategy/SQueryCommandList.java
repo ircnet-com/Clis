@@ -2,6 +2,7 @@ package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.service.ChannelService;
 import com.ircnet.library.service.IRCService;
 import org.apache.commons.cli.*;
@@ -164,7 +165,7 @@ public class SQueryCommandList implements SQueryCommand {
 
             ircService.notice(nick, "Returning a maximum of %d channel names.", maxResults);
 
-            Collection<ChannelData> channels = channelService.find(mask, topic, minUsers, maxUsers, null, null);
+            Collection<ChannelData> channels = channelService.find(null, mask, MatchType.REG_EXP, topic, minUsers, maxUsers, null, null);
             int actualResultCount = channels.size();
             channels = channels.stream().limit(maxResults).collect(Collectors.toList());
 
