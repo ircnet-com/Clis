@@ -1,3 +1,5 @@
+# ! THIS DOCUMENT IS OUTDATED AND WILL BE UPDATED SOON !
+
 $ curl -s http://localhost:8080/*
 ```
 [ {

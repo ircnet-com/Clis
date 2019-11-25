@@ -90,7 +90,7 @@ $ java -jar clis-1.0-SNAPSHOT.jar
 ```
 
 # TODO
-* Paging for rest api
+* Update API documentation
 
 # Contact
 #irc on IRCnet
