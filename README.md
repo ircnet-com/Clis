@@ -24,23 +24,30 @@ Find all channels whose name starts with "#irc" and topic contains "http":
 For more examples read this [test protocol](https://github.com/ircnet-com/Clis/blob/master/test-squery.md).
 
 # REST API
-The REST API can be used by websites, IRC clients and other third party applications to retrieve a list of IRC channels.
+The REST API can be used by websites, IRC clients and other third party applications to retrieve a list of IRC channels. It is based on the format used by [datatables](https://datatables.net/).
 
 ## Format
-```[ 
-{
-  "name" : "#irc",
-  "topic" : "visit http://www.ircnet.com",
-  "topicFrom" : "patrick",
-  "modes" : "+nt",
-  "userCount" : 42
-}, 
-{
-  "name" : "#ircnet.com",
-  "modes" : "+nt",
-  "userCount" : 23
+```{
+  "draw": 0,
+  "recordsTotal": 2,
+  "recordsFiltered": 2,
+  "data": [
+    {
+      "name": "#irc",
+      "topic": "https://www.ircnet.com | https://www.irc.it",
+      "topicFrom": "patrick",
+      "modes" : "+mtn",
+      "userCount": 42
+    },
+    {
+      "name": "#ircnet.com",
+      "topic": "website: https://www.ircnet.com",
+      "topicFrom": "patrick",
+      "modes" : "+tn",
+      "userCount": 23
+    }
+  ]
 }
-]
 ```
 
 ## Parameters
