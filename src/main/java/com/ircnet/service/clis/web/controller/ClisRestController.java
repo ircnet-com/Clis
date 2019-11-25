@@ -106,7 +106,7 @@ public class ClisRestController {
                                          @RequestParam(name = "min", required = false) Integer minUsersFilter,
                                          @RequestParam(name = "max", required = false) Integer maxUsersFilter,
                                          @RequestParam(name = "start", required = false, defaultValue = "0") Integer start,
-                                         @RequestParam(name = "size", required = false, defaultValue = "100") Integer size,
+                                         @RequestParam(name = "size", required = false) Integer size,
                                          @RequestParam(name = "sortby", required = false) String sortByParam,
                                          @RequestParam(name = "order", required = false) String sortOrderParam) {
     SortBy sortBy = null;
@@ -120,6 +120,11 @@ public class ClisRestController {
     }
 
     Collection<ChannelData> channels = channelService.find(null, channelFilter, MatchType.CONTAINS, topicFilter, minUsersFilter, maxUsersFilter, sortBy, sortOrder);
+
+    if(size == null) {
+      size = channels.size();
+    }
+
     List<ChannelData> sublist = new ArrayList<>(channels).subList(start, Math.min(start + channels.size() - start, start + size));
     List<ChannelDTO> channelDTOs = sublist.stream().map(e -> new ChannelDTO(e)).collect(Collectors.toList());
 
