@@ -119,7 +119,7 @@ public class ClisRestController {
     catch (Exception e) {
     }
 
-    Collection<ChannelData> channels = channelService.find(null, channelFilter, MatchType.CONTAINS, topicFilter, minUsersFilter, maxUsersFilter, sortBy, sortOrder);
+    Collection<ChannelData> channels = channelService.find(null, channelFilter, MatchType.REG_EXP, topicFilter, minUsersFilter, maxUsersFilter, sortBy, sortOrder);
 
     if(size == null) {
       size = channels.size();
