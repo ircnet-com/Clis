@@ -63,17 +63,17 @@ The REST API can be used by websites, IRC clients and other third party applicat
 ## Examples
 Find all channels:
 ```
-curl -s http://localhost:8080/*
+curl -s http://localhost:8080/
 ```
 
 Find all channels whose user count is at least 100 but not greater than 200:
 ```
-curl -s "http://localhost:8080/*?min=100&max=200"
+curl -s "http://localhost:8080/?min=100&max=200"
 ```
 
 Find all channels whose name starts with "#irc" and topic contains "http":
 ```
-curl -s "http://localhost:8080/#irc*?topic=http"
+curl -s "http://localhost:8080/?name=#irc*&topic=http"
 ```
 
 For more examples read this [test protocol](https://github.com/ircnet-com/Clis/blob/master/test-rest.md).
