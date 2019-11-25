@@ -97,6 +97,17 @@ public class ChannelServiceImpl implements ChannelService {
         stream = stream.filter(e ->  e.getValue().getModes() == null || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
 
         /*
+         * Apply user count filters (optional).
+         */
+        if(minUsers != null) {
+            stream = stream.filter(e -> e.getValue().getUserCount() >= minUsers);
+        }
+
+        if(maxUsers != null) {
+            stream = stream.filter(e -> e.getValue().getUserCount() <= maxUsers);
+        }
+
+        /*
          * Apply global filter. Either channel name or topic must match.
          */
         if(!StringUtils.isBlank(globalFilter)) {
