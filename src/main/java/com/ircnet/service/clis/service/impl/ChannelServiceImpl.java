@@ -111,7 +111,7 @@ public class ChannelServiceImpl implements ChannelService {
          * Apply global filter. Either channel name or topic must match.
          */
         if(!StringUtils.isBlank(globalFilter)) {
-            stream = stream.filter(e -> (e.getValue().getName().contains(globalFilter)) || (e.getValue().getTopic() != null && e.getValue().getTopic().contains(globalFilter)));
+            stream = stream.filter(e -> (StringUtils.containsIgnoreCase(e.getValue().getName(), globalFilter)) || (e.getValue().getTopic() != null && StringUtils.containsIgnoreCase(e.getValue().getTopic(), globalFilter)));
         }
 
         /*
@@ -122,7 +122,7 @@ public class ChannelServiceImpl implements ChannelService {
                 stream = stream.filter(e -> FilenameUtils.wildcardMatch(e.getValue().getName(), channelFilter, IOCase.INSENSITIVE));
             }
             else {
-                stream = stream.filter(e -> e.getValue().getName() != null && e.getValue().getName().contains(channelFilter));
+                stream = stream.filter(e -> StringUtils.containsIgnoreCase(e.getValue().getName(), channelFilter));
             }
         }
 
@@ -130,7 +130,7 @@ public class ChannelServiceImpl implements ChannelService {
          * Apply topic filter.
          */
         if(!StringUtils.isBlank(topicFilter)) {
-            stream = stream.filter(e -> e.getValue().getTopic() != null && e.getValue().getTopic().contains(topicFilter));
+            stream = stream.filter(e -> e.getValue().getTopic() != null && StringUtils.containsIgnoreCase(e.getValue().getTopic(), topicFilter));
         }
 
         Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
