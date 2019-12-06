@@ -42,13 +42,16 @@ public class ChannelData {
   private Date modificationDate;
 
   public ChannelData() {
+    this.modes = "+";
   }
 
   public ChannelData(String name) {
+    this();
     this.name = name;
   }
 
   public ChannelData(String name, String topic, String topicFrom, String modes, int userCount, Date modificationDate) {
+    this();
     this.name = name;
     this.topic = topic;
     this.topicFrom = topicFrom;
