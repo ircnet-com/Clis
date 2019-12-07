@@ -18,13 +18,11 @@ RUN cd irc-library-common/ \
 RUN cd irc-library-service/ \
  && mvn install \
  && mvn clean
- 
-
 
 RUN cd Clis \
  && mvn package \
  && mv target/clis-1.0-SNAPSHOT.jar /srv/
  
-RUN rm -rf irc-library-common irc-library-service Clis
+RUN rm -rf irc-library-common irc-library-service Clis /var/cache/apk/*
 
 CMD ["java","-jar","/srv/clis-1.0-SNAPSHOT.jar"]
