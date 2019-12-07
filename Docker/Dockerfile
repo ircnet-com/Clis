@@ -1,4 +1,3 @@
-#FROM maven:amazoncorretto
 FROM maven:ibmjava-alpine
 
 ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
