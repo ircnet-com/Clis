@@ -13,10 +13,13 @@ You'll need to make a configuration file based on ./src/main/resources/applicati
 
 ## Running
 You can run in a few ways. The most simple of which is;
+
     docker run -d -v /path/to/application.properties:/srv/application.properties clis:latest
 
 You can then expose the HTTP Port for API requests like so;
+
     docker run -d -v /path/to/application.properties:/srv/application.properties -p 8080:8080 clis:latest
 
 You can also chose to make the channels.json file persistent also;
+
     docker run -d -v /path/to/application.properties:/srv/application.properties -p 8080:8080 -v /path/to/channels.json:/srv/channels.json clis:latest
