@@ -12,6 +12,9 @@ import javax.annotation.PostConstruct;
 @Component
 public class EventRegistrationService {
     @Autowired
+    private EventBus eventBus;
+
+    @Autowired
     private YouAreServiceEventListener youAreServiceEventListener;
 
     @Autowired
@@ -34,16 +37,16 @@ public class EventRegistrationService {
         /**
          * MUST be set to false to avoid heavy performance issues.
          */
-        EventBus.setCheckInheritance(false);
+        eventBus.setCheckInheritance(false);
 
         /**
          * Registration of event listeners.
          */
-        EventBus.registerEventListener(youAreServiceEventListener);
-        EventBus.registerEventListener(channelEventListener);
-        EventBus.registerEventListener(topicEventListener);
-        EventBus.registerEventListener(channelModeEventListener);
-        EventBus.registerEventListener(squeryEventListener);
-        EventBus.registerEventListener(endOfBurstEventListener);
+        eventBus.registerEventListener(youAreServiceEventListener);
+        eventBus.registerEventListener(channelEventListener);
+        eventBus.registerEventListener(topicEventListener);
+        eventBus.registerEventListener(channelModeEventListener);
+        eventBus.registerEventListener(squeryEventListener);
+        eventBus.registerEventListener(endOfBurstEventListener);
     }
 }

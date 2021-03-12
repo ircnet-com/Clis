@@ -1,8 +1,6 @@
 package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
-import com.ircnet.library.service.IRCService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +10,7 @@ import org.springframework.stereotype.Component;
  *  - /SQUERY Clis HELP INFO
  */
 @Component
-public class SQueryCommandInfo implements SQueryCommand {
-    @Autowired
-    private IRCService ircService;
-
+public class SQueryCommandInfo extends SQueryCommand {
     @Value("${service.squery.info}")
     private String serviceInfo;
 
@@ -27,8 +22,8 @@ public class SQueryCommandInfo implements SQueryCommand {
      */
     @Override
     public void processCommand(User from, String message) {
-        ircService.notice(from.getNick(), "Channel List Service (Clis)");
-        ircService.notice(from.getNick(), serviceInfo);
+        notice(from.getNick(), "Channel List Service (Clis)");
+        notice(from.getNick(), serviceInfo);
     }
 
     /**
@@ -39,6 +34,6 @@ public class SQueryCommandInfo implements SQueryCommand {
      */
     @Override
     public void processHelp(User from, String message) {
-        ircService.notice(from.getNick(), "Shows information about this software");
+        notice(from.getNick(), "Shows information about this software");
     }
 }
