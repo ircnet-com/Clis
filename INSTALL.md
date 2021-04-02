@@ -39,7 +39,7 @@ Add an S:Line to ircd.conf like
 ```
 S:127.0.0.1:password:Clis:0xf000:1
 ```
-
+### Clis
 ```
 $ cd Clis/
 $ cp src/main/resources/application.properties .
