@@ -1,7 +1,8 @@
 package com.ircnet.service.clis;
 
+import com.ircnet.library.common.IRCTaskService;
+import com.ircnet.library.service.IRCServiceTask;
 import com.ircnet.service.clis.persistence.PersistenceService;
-import com.ircnet.library.service.IRCService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
@@ -14,7 +15,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
     @Autowired
-    private IRCService ircService;
+    private IRCTaskService ircTaskService;
+
+    @Autowired
+    private IRCServiceTask ircServiceTask;
 
     @Autowired
     private PersistenceService persistenceService;
@@ -33,7 +37,7 @@ public class Application implements CommandLineRunner {
         Thread ircServiceThread = new Thread() {
             @Override
             public void run() {
-                ircService.run();
+                ircTaskService.run(ircServiceTask);
             }
         };
 

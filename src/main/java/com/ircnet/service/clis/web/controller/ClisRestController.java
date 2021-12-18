@@ -5,18 +5,18 @@ import com.ircnet.service.clis.constant.FilterBy;
 import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.constant.SortBy;
 import com.ircnet.service.clis.constant.SortOrder;
-import com.ircnet.service.clis.web.datatables.*;
 import com.ircnet.service.clis.service.ChannelService;
+import com.ircnet.service.clis.web.datatables.*;
 import com.ircnet.service.clis.web.dto.ChannelDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
  */
 @RestController
 public class ClisRestController {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClisRestController.class);
+
     @Autowired
     private ChannelService channelService;
 
@@ -55,7 +57,7 @@ public class ClisRestController {
         }
       }
       catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.debug("Could not parse sort attributes", e);
       }
 
       String searchTerm = null;
@@ -101,6 +103,7 @@ public class ClisRestController {
    * @return A list of channels
    */
   @RequestMapping(value = "/", method = RequestMethod.GET)
+  @CrossOrigin(origins = "*")
   public DTResponse getList(@RequestParam(name = "name", required = false) String channelFilter,
                                          @RequestParam(name = "topic", required = false) String topicFilter,
                                          @RequestParam(name = "min", required = false) Integer minUsersFilter,
@@ -117,6 +120,7 @@ public class ClisRestController {
       sortOrder = SortOrder.valueOf(StringUtils.upperCase(sortOrderParam));
     }
     catch (Exception e) {
+      LOGGER.debug("Could not parse sort attributes", e);
     }
 
     Collection<ChannelData> channels = channelService.find(null, channelFilter, MatchType.REG_EXP, topicFilter, minUsersFilter, maxUsersFilter, sortBy, sortOrder);
