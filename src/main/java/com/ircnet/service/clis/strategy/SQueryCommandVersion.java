@@ -2,8 +2,6 @@ package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
 import com.ircnet.service.clis.Constants;
-import com.ircnet.library.service.IRCService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,10 +10,7 @@ import org.springframework.stereotype.Component;
  *  - /SQUERY Clis HELP VERSION
  */
 @Component
-public class SQueryCommandVersion implements SQueryCommand {
-    @Autowired
-    private IRCService ircService;
-
+public class SQueryCommandVersion extends SQueryCommand {
     /**
      * Handler for: /SQUERY Clis VERSION
      *
@@ -24,7 +19,7 @@ public class SQueryCommandVersion implements SQueryCommand {
      */
     @Override
     public void processCommand(User from, String message) {
-        ircService.notice(from.getNick(), "Clis v%s", Constants.VERSION);
+        notice(from.getNick(), "Clis v%s", Constants.VERSION);
     }
 
     /**
@@ -35,6 +30,6 @@ public class SQueryCommandVersion implements SQueryCommand {
      */
     @Override
     public void processHelp(User from, String message) {
-        ircService.notice(from.getNick(), "Shows the current version");
+        notice(from.getNick(), "Shows the current version");
     }
 }
