@@ -2,13 +2,14 @@ package com.ircnet.service.clis;
 
 import com.ircnet.library.common.configuration.IRCServerModel;
 import com.ircnet.library.common.configuration.ServerModel;
-import com.ircnet.service.clis.strategy.*;
-import com.ircnet.library.service.IRCService;
+import com.ircnet.library.service.IRCServiceTask;
 import com.ircnet.library.service.ServiceConfigurationModel;
+import com.ircnet.service.clis.strategy.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -26,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Configuration
 @EnableScheduling
+@ComponentScan(basePackages = {"com.ircnet.library.common", "com.ircnet.library.service"})
 public class ClisConfiguration extends WebMvcConfigurationSupport {
     @Value("${service.name}")
     private String serviceName;
@@ -57,15 +59,13 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
     @Value("${ircserver.protocol:#{null}}")
     private String ircServerProtocol;
 
-    private Map<String, SQueryCommand> squeryCommandMap;
-
     /**
      * Creates a new IRC service.
      *
      * @return An IRC service
      */
     @Bean
-    public IRCService ircService() {
+    public IRCServiceTask ircServiceTask() {
         IRCServerModel ircServerModel = new IRCServerModel();
         ircServerModel.setHostname(ircServerHost);
         ircServerModel.setPort(ircServerPort);
@@ -84,7 +84,7 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
         serviceConfiguration.setPassword(servicePassword);
         serviceConfiguration.setIrcServers(Collections.singletonList(ircServerModel));
 
-        return new IRCService(serviceConfiguration);
+        return new IRCServiceTask(serviceConfiguration);
     }
 
     /**

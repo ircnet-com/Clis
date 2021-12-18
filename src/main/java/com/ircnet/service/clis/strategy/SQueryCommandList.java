@@ -4,7 +4,6 @@ import com.ircnet.library.common.User;
 import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.service.ChannelService;
-import com.ircnet.library.service.IRCService;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +23,8 @@ import java.util.stream.Collectors;
  *  - /SQUERY Clis HELP LIST
  */
 @Component
-public class SQueryCommandList implements SQueryCommand {
+public class SQueryCommandList extends SQueryCommand {
     private static final Logger LOGGER = LoggerFactory.getLogger(SQueryCommandList.class);
-
-    @Autowired
-    private IRCService ircService;
 
     @Autowired
     private ChannelService channelService;
@@ -98,7 +94,7 @@ public class SQueryCommandList implements SQueryCommand {
         CommandLineParser parser = new DefaultParser();
 
         if (parts.length == 1) {
-            ircService.notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
+            notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
             return;
         }
 
@@ -108,7 +104,7 @@ public class SQueryCommandList implements SQueryCommand {
             CommandLine commandLine = parser.parse(options, requestArguments);
 
             if (CollectionUtils.isEmpty(commandLine.getArgList())) {
-                ircService.notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
+                notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
                 return;
             }
 
@@ -122,7 +118,7 @@ public class SQueryCommandList implements SQueryCommand {
                 try {
                     minUsers = Integer.parseInt(commandLine.getOptionValue("min"));
                 } catch (NumberFormatException e) {
-                    ircService.notice(nick, "Argument of -min is not a number: '%s'", commandLine.getOptionValue("min"));
+                    notice(nick, "Argument of -min is not a number: '%s'", commandLine.getOptionValue("min"));
                     errorCount++;
                 }
             }
@@ -131,7 +127,7 @@ public class SQueryCommandList implements SQueryCommand {
                 try {
                     maxUsers = Integer.parseInt(commandLine.getOptionValue("max"));
                 } catch (NumberFormatException e) {
-                    ircService.notice(nick, "Argument of -max is not a number: '%s'", commandLine.getOptionValue("max"));
+                    notice(nick, "Argument of -max is not a number: '%s'", commandLine.getOptionValue("max"));
                     errorCount++;
                 }
             }
@@ -142,7 +138,7 @@ public class SQueryCommandList implements SQueryCommand {
                 String flags = commandLine.getOptionValue("show");
 
                 if (!flags.matches("^[mt]+$")) {
-                    ircService.notice(nick, "Invalid -show flags '%s'. Allowed flags: 'mt'", flags);
+                    notice(nick, "Invalid -show flags '%s'. Allowed flags: 'mt'", flags);
                     errorCount++;
                 } else {
                     if (flags.indexOf('m') != -1) {
@@ -156,14 +152,14 @@ public class SQueryCommandList implements SQueryCommand {
             }
 
             if (errorCount > 0) {
-                ircService.notice(nick, "Your query contains %d errors. Use /SQUERY %s HELP LIST", errorCount, serviceName);
+                notice(nick, "Your query contains %d errors. Use /SQUERY %s HELP LIST", errorCount, serviceName);
                 return;
             }
 
             String querySummary = buildQuerySummary(nick, minUsers, maxUsers, topic, showModes, showTopicAuthor, mask);
-            ircService.notice(nick, querySummary);
+            notice(nick, querySummary);
 
-            ircService.notice(nick, "Returning a maximum of %d channel names.", maxResults);
+            notice(nick, "Returning a maximum of %d channel names.", maxResults);
 
             Collection<ChannelData> channels = channelService.find(null, mask, MatchType.REG_EXP, topic, minUsers, maxUsers, null, null);
             int actualResultCount = channels.size();
@@ -188,10 +184,10 @@ public class SQueryCommandList implements SQueryCommand {
                     response.append(String.format(" (%s)", channel.getTopicFrom()));
                 }
 
-                ircService.notice(nick, response.toString());
+                notice(nick, response.toString());
             }
 
-            ircService.notice(nick, "Found %d visible channels.", actualResultCount);
+            notice(nick, "Found %d visible channels.", actualResultCount);
         } catch (ParseException e) {
             LOGGER.error("Failed to parse '{}' from {}", message, from, e);
         }
@@ -244,19 +240,19 @@ public class SQueryCommandList implements SQueryCommand {
         String[] args = message.split(" ");
 
         if (args.length > 2 && args[2].equalsIgnoreCase("EXAMPLES")) {
-            ircService.notice(nick, "LIST Examples:");
-            ircService.notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", serviceName);
-            ircService.notice(nick, "  Lists all channels which start with #ircnet (#ircnet, #ircnet.com, ..) and have at least 10 users");
+            notice(nick, "LIST Examples:");
+            notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", serviceName);
+            notice(nick, "  Lists all channels which start with #ircnet (#ircnet, #ircnet.com, ..) and have at least 10 users");
 
-            ircService.notice(nick, "/SQUERY %s LIST -min 10 -t http *", serviceName);
-            ircService.notice(nick, "  Lists all channels whose topic contains \"http\" and have at least 10 users");
+            notice(nick, "/SQUERY %s LIST -min 10 -t http *", serviceName);
+            notice(nick, "  Lists all channels whose topic contains \"http\" and have at least 10 users");
 
-            ircService.notice(nick, "/SQUERY %s LIST -show mt *", serviceName);
-            ircService.notice(nick, "  Lists all channels and shows the modes and the topic author");
+            notice(nick, "/SQUERY %s LIST -show mt *", serviceName);
+            notice(nick, "  Lists all channels and shows the modes and the topic author");
         } else {
-            ircService.notice(nick, "Usage: /SQUERY %s [options] <mask>", serviceName);
+            notice(nick, "Usage: /SQUERY %s [options] <mask>", serviceName);
             sendOptionSyntax(nick, options);
-            ircService.notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", serviceName);
+            notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", serviceName);
         }
     }
 
@@ -283,7 +279,7 @@ public class SQueryCommandList implements SQueryCommand {
                 }
             }
 
-            ircService.notice(nick, " %-20s %s", stringBuilder.toString(), option.getDescription() != null ? option.getDescription() : "");
+            notice(nick, " %-20s %s", stringBuilder.toString(), option.getDescription() != null ? option.getDescription() : "");
         }
     }
 }
