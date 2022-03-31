@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.Collections;
@@ -103,7 +104,7 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
                                                        SQueryCommandAdmin squeryCommandAdmin,
                                                        SQueryCommandVersion squeryCommandVersion,
                                                        SQueryCommandInfo squeryCommandInfo) {
-        Map<String, SQueryCommand> commandMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, SQueryCommand> commandMap = new LinkedCaseInsensitiveMap<>();
 
         commandMap.put("LIST", squeryCommandList);
         commandMap.put("ADMIN", squeryCommandAdmin);

@@ -91,16 +91,15 @@ public class SQueryCommandList extends SQueryCommand {
         String[] parts = message.split(" ");
         int errorCount = 0;
 
-        CommandLineParser parser = new DefaultParser();
-
         if (parts.length == 1) {
             notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
             return;
         }
 
-        String[] requestArguments = Arrays.copyOfRange(parts, 1, parts.length);
 
         try {
+            String[] requestArguments = Arrays.copyOfRange(parts, 1, parts.length);
+            CommandLineParser parser = new DefaultParser();
             CommandLine commandLine = parser.parse(options, requestArguments);
 
             if (CollectionUtils.isEmpty(commandLine.getArgList())) {
@@ -189,7 +188,7 @@ public class SQueryCommandList extends SQueryCommand {
 
             notice(nick, "Found %d visible channels.", actualResultCount);
         } catch (ParseException e) {
-            LOGGER.error("Failed to parse '{}' from {}", message, from, e);
+            LOGGER.debug("Failed to parse '{}' from {}", message, from, e);
         }
     }
 
@@ -250,7 +249,7 @@ public class SQueryCommandList extends SQueryCommand {
             notice(nick, "/SQUERY %s LIST -show mt *", serviceName);
             notice(nick, "  Lists all channels and shows the modes and the topic author");
         } else {
-            notice(nick, "Usage: /SQUERY %s [options] <mask>", serviceName);
+            notice(nick, "Usage: /SQUERY %s LIST [options] <mask>", serviceName);
             sendOptionSyntax(nick, options);
             notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", serviceName);
         }
