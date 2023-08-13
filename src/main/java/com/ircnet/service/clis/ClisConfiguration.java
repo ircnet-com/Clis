@@ -68,7 +68,7 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
     @Bean
     public IRCServiceTask ircServiceTask() {
         IRCServerModel ircServerModel = new IRCServerModel();
-        ircServerModel.setHostname(ircServerHost);
+        ircServerModel.setAddress(ircServerHost);
         ircServerModel.setPort(ircServerPort);
 
         if (!StringUtils.isEmpty(ircServerProtocol)) {
