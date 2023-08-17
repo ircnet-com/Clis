@@ -2,6 +2,7 @@ package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.service.ChannelService;
 import org.apache.commons.cli.*;
@@ -29,8 +30,8 @@ public class SQueryCommandList extends SQueryCommand {
     @Autowired
     private ChannelService channelService;
 
-    @Value("${service.name}")
-    private String serviceName;
+    @Autowired
+    private ClisProperties properties;
 
     @Value("${service.squery.list.maxresults:0}")
     private int maxResults;
@@ -92,7 +93,7 @@ public class SQueryCommandList extends SQueryCommand {
         int errorCount = 0;
 
         if (parts.length == 1) {
-            notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
+            notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", properties.getName());
             return;
         }
 
@@ -103,7 +104,7 @@ public class SQueryCommandList extends SQueryCommand {
             CommandLine commandLine = parser.parse(options, requestArguments);
 
             if (CollectionUtils.isEmpty(commandLine.getArgList())) {
-                notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", serviceName);
+                notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", properties.getName());
                 return;
             }
 
@@ -151,7 +152,7 @@ public class SQueryCommandList extends SQueryCommand {
             }
 
             if (errorCount > 0) {
-                notice(nick, "Your query contains %d errors. Use /SQUERY %s HELP LIST", errorCount, serviceName);
+                notice(nick, "Your query contains %d errors. Use /SQUERY %s HELP LIST", errorCount, properties.getName());
                 return;
             }
 
@@ -240,18 +241,18 @@ public class SQueryCommandList extends SQueryCommand {
 
         if (args.length > 2 && args[2].equalsIgnoreCase("EXAMPLES")) {
             notice(nick, "LIST Examples:");
-            notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", serviceName);
+            notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", properties.getName());
             notice(nick, "  Lists all channels which start with #ircnet (#ircnet, #ircnet.com, ..) and have at least 10 users");
 
-            notice(nick, "/SQUERY %s LIST -min 10 -t http *", serviceName);
+            notice(nick, "/SQUERY %s LIST -min 10 -t http *", properties.getName());
             notice(nick, "  Lists all channels whose topic contains \"http\" and have at least 10 users");
 
-            notice(nick, "/SQUERY %s LIST -show mt *", serviceName);
+            notice(nick, "/SQUERY %s LIST -show mt *", properties.getName());
             notice(nick, "  Lists all channels and shows the modes and the topic author");
         } else {
-            notice(nick, "Usage: /SQUERY %s LIST [options] <mask>", serviceName);
+            notice(nick, "Usage: /SQUERY %s LIST [options] <mask>", properties.getName());
             sendOptionSyntax(nick, options);
-            notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", serviceName);
+            notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", properties.getName());
         }
     }
 

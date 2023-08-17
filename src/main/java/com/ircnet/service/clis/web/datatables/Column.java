@@ -1,9 +1,12 @@
 package com.ircnet.service.clis.web.datatables;
 
 
+import lombok.Data;
+
 /**
  * https://datatables.net/manual/server-side
  */
+@Data
 public class Column {
   /**
    * Column's data source, as defined by columns.data.
@@ -29,47 +32,4 @@ public class Column {
    * Search to apply to this specific column.
    */
   private Search search;
-
-  public Column() {
-  }
-
-  public String getData() {
-    return data;
-  }
-
-  public void setData(String data) {
-    this.data = data;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Boolean getSearchable() {
-    return searchable;
-  }
-
-  public void setSearchable(Boolean searchable) {
-    this.searchable = searchable;
-  }
-
-  public Boolean getOrderable() {
-    return orderable;
-  }
-
-  public void setOrderable(Boolean orderable) {
-    this.orderable = orderable;
-  }
-
-  public Search getSearch() {
-    return search;
-  }
-
-  public void setSearch(Search search) {
-    this.search = search;
-  }
 }

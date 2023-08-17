@@ -1,8 +1,11 @@
 package com.ircnet.service.clis.web.datatables;
 
+import lombok.Data;
+
 /**
  * https://datatables.net/manual/server-side
  */
+@Data
 public class Order {
   /**
    * Column to which ordering should be applied. This is an index reference to the columns array of information that is
@@ -15,23 +18,4 @@ public class Order {
    * respectively.
    */
   private String dir;
-
-  public Order() {
-  }
-
-  public Integer getColumn() {
-    return column;
-  }
-
-  public void setColumn(Integer column) {
-    this.column = column;
-  }
-
-  public String getDir() {
-    return dir;
-  }
-
-  public void setDir(String dir) {
-    this.dir = dir;
-  }
 }
