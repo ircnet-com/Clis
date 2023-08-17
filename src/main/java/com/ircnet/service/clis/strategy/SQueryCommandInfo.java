@@ -1,7 +1,8 @@
 package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
-import org.springframework.beans.factory.annotation.Value;
+import com.ircnet.service.clis.ClisProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SQueryCommandInfo extends SQueryCommand {
-    @Value("${service.squery.info}")
-    private String serviceInfo;
+    @Autowired
+    private ClisProperties properties;
 
     /**
      * Handler for: /SQUERY Clis INFO
@@ -23,7 +24,7 @@ public class SQueryCommandInfo extends SQueryCommand {
     @Override
     public void processCommand(User from, String message) {
         notice(from.getNick(), "Channel List Service (Clis)");
-        notice(from.getNick(), serviceInfo);
+        notice(from.getNick(), properties.getSquery().getInfo());
     }
 
     /**

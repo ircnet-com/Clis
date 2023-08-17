@@ -4,13 +4,13 @@ import com.ircnet.library.common.connection.IRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.library.service.IRCServiceTask;
 import com.ircnet.library.service.event.SQueryEvent;
+import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.strategy.SQueryCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -34,8 +34,8 @@ public class SQueryEventListener extends AbstractEventListener<SQueryEvent> {
     @Autowired
     private IRCServiceTask ircServiceTask;
 
-    @Value("${service.name}")
-    private String serviceName;
+    @Autowired
+    private ClisProperties properties;
 
     @Qualifier("squeryCommandMap")
     @Autowired
@@ -60,7 +60,8 @@ public class SQueryEventListener extends AbstractEventListener<SQueryEvent> {
         }
 
         else {
-            ircConnectionService.notice(ircServiceTask.getIRCConnection(), nick, "Unrecognized command: \"%s\". Use /SQUERY %s HELP\n", parts[0], serviceName);
+            ircConnectionService.notice(ircServiceTask.getIRCConnection(), nick,
+                "Unrecognized command: \"%s\". Use /SQUERY %s HELP\n", parts[0], properties.getName());
         }
     }
 }

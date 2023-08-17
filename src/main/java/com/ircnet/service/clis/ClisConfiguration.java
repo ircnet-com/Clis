@@ -3,7 +3,6 @@ package com.ircnet.service.clis;
 import com.ircnet.library.common.configuration.IRCServerModel;
 import com.ircnet.library.common.configuration.ServerModel;
 import com.ircnet.library.service.IRCServiceTask;
-import com.ircnet.library.service.ServiceConfigurationModel;
 import com.ircnet.service.clis.strategy.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,35 +29,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @EnableScheduling
 @ComponentScan(basePackages = {"com.ircnet.library.common", "com.ircnet.library.service"})
 public class ClisConfiguration extends WebMvcConfigurationSupport {
-    @Value("${service.name}")
-    private String serviceName;
-
-    @Value("${service.distributionMask}")
-    private String serviceDistributionMask;
-
-    @Value("${service.info}")
-    private String serviceInfo;
-
-    @Value("${service.password}")
+    @Value("${service.password:#{null}}")
     private String servicePassword;
 
-    @Value("${service.type}")
-    private int serviceType;
-
-    @Value("${service.dataFlags}")
-    private int serviceDataFlags;
-
-    @Value("${service.burstFlags}")
-    private int serviceBurstFlags;
-
-    @Value("${ircserver.host}")
+    @Value("${ircserver.host:#{null}}")
     private String ircServerHost;
 
-    @Value("${ircserver.port}")
+    @Value("${ircserver.port:#0}")
     private int ircServerPort;
 
     @Value("${ircserver.protocol:#{null}}")
     private String ircServerProtocol;
+
+    @Autowired
+    private ClisProperties properties;
 
     /**
      * Creates a new IRC service.
@@ -67,25 +51,21 @@ public class ClisConfiguration extends WebMvcConfigurationSupport {
      */
     @Bean
     public IRCServiceTask ircServiceTask() {
-        IRCServerModel ircServerModel = new IRCServerModel();
-        ircServerModel.setAddress(ircServerHost);
-        ircServerModel.setPort(ircServerPort);
+        if(CollectionUtils.isEmpty(properties.getIrcServers())) {
+            // Legacy support for old application.properties
+            IRCServerModel ircServerModel = new IRCServerModel();
+            ircServerModel.setAddress(ircServerHost);
+            ircServerModel.setPort(ircServerPort);
+            ircServerModel.setPassword(servicePassword);
 
-        if (!StringUtils.isEmpty(ircServerProtocol)) {
-            ircServerModel.setProtocol(ServerModel.Protocol.valueOf(ircServerProtocol.toUpperCase()));
+            if (!StringUtils.isEmpty(ircServerProtocol)) {
+                ircServerModel.setProtocol(ServerModel.Protocol.valueOf(ircServerProtocol.toUpperCase()));
+            }
+
+            properties.setIrcServers(Collections.singletonList(ircServerModel));
         }
 
-        ServiceConfigurationModel serviceConfiguration = new ServiceConfigurationModel();
-        serviceConfiguration.setServiceName(serviceName);
-        serviceConfiguration.setDistributionMask(serviceDistributionMask);
-        serviceConfiguration.setServiceType(serviceType);
-        serviceConfiguration.setDataFlags(serviceDataFlags);
-        serviceConfiguration.setBurstFlags(serviceBurstFlags);
-        serviceConfiguration.setInfo(serviceInfo);
-        serviceConfiguration.setPassword(servicePassword);
-        serviceConfiguration.setIrcServers(Collections.singletonList(ircServerModel));
-
-        return new IRCServiceTask(serviceConfiguration);
+        return new IRCServiceTask(properties);
     }
 
     /**
