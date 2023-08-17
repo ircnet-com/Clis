@@ -1,12 +1,14 @@
 package com.ircnet.service.clis.web.datatables;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
 
 import java.util.List;
 
 /**
  * https://datatables.net/manual/server-side
  */
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DTResponse<T> {
   /**
@@ -54,45 +56,5 @@ public class DTResponse<T> {
 
   public DTResponse(Integer draw, Integer recordsTotal, Integer recordsFiltered, List<T> data) {
     this(draw, recordsTotal, recordsFiltered, data, null);
-  }
-
-  public Integer getDraw() {
-    return draw;
-  }
-
-  public void setDraw(Integer draw) {
-    this.draw = draw;
-  }
-
-  public Integer getRecordsTotal() {
-    return recordsTotal;
-  }
-
-  public void setRecordsTotal(Integer recordsTotal) {
-    this.recordsTotal = recordsTotal;
-  }
-
-  public Integer getRecordsFiltered() {
-    return recordsFiltered;
-  }
-
-  public void setRecordsFiltered(Integer recordsFiltered) {
-    this.recordsFiltered = recordsFiltered;
-  }
-
-  public List<T> getData() {
-    return data;
-  }
-
-  public void setData(List<T> data) {
-    this.data = data;
-  }
-
-  public String getError() {
-    return error;
-  }
-
-  public void setError(String error) {
-    this.error = error;
   }
 }

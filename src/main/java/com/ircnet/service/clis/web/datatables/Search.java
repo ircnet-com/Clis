@@ -1,8 +1,11 @@
 package com.ircnet.service.clis.web.datatables;
 
+import lombok.Data;
+
 /**
  * https://datatables.net/manual/server-side
  */
+@Data
 public class Search {
   /**
    * Global search value. To be applied to all columns which have searchable as true.
@@ -15,23 +18,4 @@ public class Search {
    * reasons on large data sets, but it is technically possible and at the discretion of your script.
    */
   private Boolean regex;
-
-  public Search() {
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public Boolean getRegex() {
-    return regex;
-  }
-
-  public void setRegex(Boolean regex) {
-    this.regex = regex;
-  }
 }

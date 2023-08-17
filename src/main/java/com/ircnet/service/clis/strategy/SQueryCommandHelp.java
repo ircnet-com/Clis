@@ -1,8 +1,9 @@
 package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
+import com.ircnet.service.clis.ClisProperties;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,11 +15,8 @@ import java.util.Map;
  */
 @Component
 public class SQueryCommandHelp extends SQueryCommand {
-    @Value("${service.name}")
-    private String serviceName;
-
-    @Value("${service.squery.info}")
-    private String serviceInfo;
+    @Autowired
+    private ClisProperties properties;
 
     @Resource(name = "squeryCommandMap")
 
@@ -41,8 +39,8 @@ public class SQueryCommandHelp extends SQueryCommand {
 
         if(parts.length == 1) {
             // HELP
-            notice(from.getNick(), "%s help index", serviceName);
-            notice(from.getNick(), "Use /SQUERY %s HELP <topic>", serviceName);
+            notice(from.getNick(), "%s help index", properties.getName());
+            notice(from.getNick(), "Use /SQUERY %s HELP <topic>", properties.getName());
             notice(from.getNick(), "Available topics: %s", StringUtils.join((squeryCommandMap).keySet(), ", "));
         }
         else {
@@ -53,7 +51,7 @@ public class SQueryCommandHelp extends SQueryCommand {
                 squeryCommand.processHelp(from, message);
             }
             else {
-                notice(from.getNick(), "No such help topic: \"%s\". Use /SQUERY %s HELP", parts[1], serviceName);
+                notice(from.getNick(), "No such help topic: \"%s\". Use /SQUERY %s HELP", parts[1], properties.getName());
             }
         }
     }
@@ -67,6 +65,6 @@ public class SQueryCommandHelp extends SQueryCommand {
     @Override
     public void processHelp(User from, String message) {
         String[] parts = message.split(" ");
-        notice(from.getNick(), "No such help topic: \"%s\". Use /SQUERY %s HELP", parts[1], serviceName);
+        notice(from.getNick(), "No such help topic: \"%s\". Use /SQUERY %s HELP", parts[1], properties.getName());
     }
 }
