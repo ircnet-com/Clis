@@ -5,6 +5,7 @@ import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.constant.SortBy;
 import com.ircnet.service.clis.constant.SortOrder;
 import com.ircnet.service.clis.service.ChannelService;
+import jakarta.annotation.Resource;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
