@@ -1,10 +1,9 @@
 package com.ircnet.service.clis.event;
 
 import com.ircnet.library.common.event.EventBus;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 /**
  * This class registers event listeners.

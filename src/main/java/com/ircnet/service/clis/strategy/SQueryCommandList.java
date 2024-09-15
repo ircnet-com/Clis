@@ -5,6 +5,7 @@ import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.service.ChannelService;
+import jakarta.annotation.PostConstruct;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;

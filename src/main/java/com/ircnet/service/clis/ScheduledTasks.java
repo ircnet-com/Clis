@@ -2,13 +2,13 @@ package com.ircnet.service.clis;
 
 import com.ircnet.service.clis.persistence.PersistenceService;
 import com.ircnet.service.clis.service.ChannelService;
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Iterator;
 import java.util.Map;
 
