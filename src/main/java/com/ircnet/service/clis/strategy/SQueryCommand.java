@@ -1,8 +1,7 @@
 package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
-import com.ircnet.library.common.connection.IRCConnectionService;
-import com.ircnet.library.service.IRCServiceTask;
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -12,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class SQueryCommand {
     @Autowired
-    protected IRCConnectionService ircConnectionService;
-
-    @Autowired
-    protected IRCServiceTask ircServiceTask;
+    private SingletonIRCConnectionService ircConnectionService;
 
     /**
      * Sends a notice.
@@ -25,7 +21,7 @@ public abstract class SQueryCommand {
      * @param args Arguments
      */
     protected void notice(String target, String format, Object... args) {
-        ircConnectionService.notice(ircServiceTask.getIRCConnection(), target, format, args);
+        ircConnectionService.notice(target, format, args);
     }
 
     /**

@@ -1,0 +1,3 @@
+com.ircnet.library.common.IRCCommonConfiguration
+com.ircnet.library.service.IRCServiceConfiguration
+com.ircnet.library.service.IRCServiceEventConfiguration

@@ -1,8 +1,7 @@
 package com.ircnet.service.clis.event;
 
-import com.ircnet.library.common.connection.IRCConnectionService;
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
-import com.ircnet.library.service.IRCServiceTask;
 import com.ircnet.library.service.event.SQueryEvent;
 import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.strategy.SQueryCommand;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 /**
  * Event for SQUERY message:
- *  :nick!user@localhost SQUERY Clis@irc.ircnet.com :list #irc
+ * :nick!user@localhost SQUERY Clis@irc.ircnet.com :list #irc
  *
  * SQUERY is used by users to talk to services. Services reply by NOTICE.
  *
@@ -29,10 +28,7 @@ public class SQueryEventListener extends AbstractEventListener<SQueryEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SQueryEventListener.class);
 
     @Autowired
-    private IRCConnectionService ircConnectionService;
-
-    @Autowired
-    private IRCServiceTask ircServiceTask;
+    private SingletonIRCConnectionService ircConnectionService;
 
     @Autowired
     private ClisProperties properties;
@@ -55,13 +51,12 @@ public class SQueryEventListener extends AbstractEventListener<SQueryEvent> {
 
         SQueryCommand squeryCommand = squeryCommandMap.get(parts[0]);
 
-        if(squeryCommand != null) {
+        if (squeryCommand != null) {
             squeryCommand.processCommand(event.getFrom(), event.getMessage());
         }
-
         else {
-            ircConnectionService.notice(ircServiceTask.getIRCConnection(), nick,
-                "Unrecognized command: \"%s\". Use /SQUERY %s HELP\n", parts[0], properties.getName());
+            ircConnectionService.notice(nick,
+                    "Unrecognized command: \"%s\". Use /SQUERY %s HELP\n", parts[0], properties.getName());
         }
     }
 }
