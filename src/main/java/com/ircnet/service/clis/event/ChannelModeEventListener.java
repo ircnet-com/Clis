@@ -1,12 +1,11 @@
 package com.ircnet.service.clis.event;
 
+import com.ircnet.library.common.connection.IRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.library.service.event.ChannelModeEvent;
 import com.ircnet.service.clis.service.ChannelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Event for MODE message:
@@ -20,13 +19,16 @@ import org.springframework.stereotype.Component;
  * not be removed immediately. This avoids that the topic gets lost, when an user decided to make the channel public
  * again.
  */
-@Component
-public class ChannelModeEventListener extends AbstractEventListener<ChannelModeEvent> {
+public class ChannelModeEventListener extends AbstractEventListener<ChannelModeEvent, IRCConnectionService> {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelModeEventListener.class);
 
-    @Autowired
     private ChannelService channelService;
+
+    public ChannelModeEventListener(IRCConnectionService ircConnectionService, ChannelService channelService) {
+        super(ircConnectionService);
+        this.channelService = channelService;
+    }
 
     protected void onEvent(ChannelModeEvent event) {
         channelService.updateModes(event.getChannelName(), event.getModes());

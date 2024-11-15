@@ -1,9 +1,19 @@
 package com.ircnet.service.clis.event;
 
+import com.ircnet.library.common.SettingService;
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
 import com.ircnet.library.common.event.EventBus;
+import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.ClisProperties;
+import com.ircnet.service.clis.persistence.PersistenceService;
+import com.ircnet.service.clis.service.ChannelService;
+import com.ircnet.service.clis.strategy.SQueryCommand;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * This class registers event listeners.
@@ -14,38 +24,39 @@ public class EventRegistrationService {
     private EventBus eventBus;
 
     @Autowired
-    private YouAreServiceEventListener youAreServiceEventListener;
+    private SingletonIRCConnectionService ircConnectionService;
 
     @Autowired
-    private ChannelEventListener channelEventListener;
+    private SettingService settingService;
 
     @Autowired
-    private TopicEventListener topicEventListener;
+    private ChannelService channelService;
 
     @Autowired
-    private ChannelModeEventListener channelModeEventListener;
+    private PersistenceService persistenceService;
 
     @Autowired
-    private SQueryEventListener squeryEventListener;
+    private ClisProperties properties;
 
     @Autowired
-    private EndOfBurstEventListener endOfBurstEventListener;
+    @Qualifier("squeryCommandMap")
+    private Map<String, SQueryCommand > squeryCommandMap;
+
+    @Autowired
+    @Qualifier("channelMap")
+    Map<String, ChannelData > channelMap;
 
     @PostConstruct
     public void init() {
-        /**
-         * MUST be set to false to avoid heavy performance issues.
-         */
+        // MUST be set to false to avoid heavy performance issues.
         eventBus.setCheckInheritance(false);
 
-        /**
-         * Registration of event listeners.
-         */
-        eventBus.registerEventListener(youAreServiceEventListener);
-        eventBus.registerEventListener(channelEventListener);
-        eventBus.registerEventListener(topicEventListener);
-        eventBus.registerEventListener(channelModeEventListener);
-        eventBus.registerEventListener(squeryEventListener);
-        eventBus.registerEventListener(endOfBurstEventListener);
+        // Registration of event listeners.
+        eventBus.registerEventListener(new YouAreServiceEventListener(ircConnectionService, settingService));
+        eventBus.registerEventListener(new ChannelEventListener(ircConnectionService, channelService));
+        eventBus.registerEventListener(new TopicEventListener(ircConnectionService, channelService));
+        eventBus.registerEventListener(new ChannelModeEventListener(ircConnectionService, channelService));
+        eventBus.registerEventListener(new SQueryEventListener(ircConnectionService, squeryCommandMap, properties));
+        eventBus.registerEventListener(new EndOfBurstEventListener(ircConnectionService, channelMap, persistenceService));
     }
 }
