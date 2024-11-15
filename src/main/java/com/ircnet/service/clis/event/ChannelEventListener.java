@@ -1,12 +1,11 @@
 package com.ircnet.service.clis.event;
 
+import com.ircnet.library.common.connection.IRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.library.service.event.ChannelEvent;
 import com.ircnet.service.clis.service.ChannelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Event for CHANNEL message:
@@ -19,13 +18,16 @@ import org.springframework.stereotype.Component;
  * Empty channels will not be removed immediately. This avoids that the topic gets lost if the channel gets empty during
  * netsplit.
  */
-@Component
-public class ChannelEventListener extends AbstractEventListener<ChannelEvent> {
+public class ChannelEventListener extends AbstractEventListener<ChannelEvent, IRCConnectionService> {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelEventListener.class);
 
-    @Autowired
     private ChannelService channelService;
+
+    public ChannelEventListener(IRCConnectionService ircConnectionService, ChannelService channelService) {
+        super(ircConnectionService);
+        this.channelService = channelService;
+    }
 
     protected void onEvent(ChannelEvent event) {
         channelService.updateOrInsert(event.getChannelName(), event.getUserCount());

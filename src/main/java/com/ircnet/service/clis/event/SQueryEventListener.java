@@ -8,9 +8,6 @@ import com.ircnet.service.clis.strategy.SQueryCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -22,22 +19,19 @@ import java.util.Map;
  *
  * This event listener parses all supported commands of Clis.
  */
-@Component
-public class SQueryEventListener extends AbstractEventListener<SQueryEvent> {
+public class SQueryEventListener extends AbstractEventListener<SQueryEvent, SingletonIRCConnectionService> {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(SQueryEventListener.class);
 
-    @Autowired
-    private SingletonIRCConnectionService ircConnectionService;
-
-    @Autowired
     private ClisProperties properties;
-
-    @Qualifier("squeryCommandMap")
-    @Autowired
     private Map<String, SQueryCommand> squeryCommandMap;
 
-    public SQueryEventListener() {
+    public SQueryEventListener(SingletonIRCConnectionService ircConnectionService,
+                               Map<String, SQueryCommand> squeryCommandMap,
+                               ClisProperties properties) {
+        super(ircConnectionService);
+        this.squeryCommandMap = squeryCommandMap;
+        this.properties = properties;
     }
 
     protected void onEvent(SQueryEvent event) {
