@@ -1,10 +1,8 @@
-FROM maven:ibmjava-alpine
+FROM maven:3.8.5-openjdk-17
 
 ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 WORKDIR /srv
-
-RUN apk update && apk add git
 
 RUN git clone https://github.com/ircnet-com/irc-library-common.git \
  && git clone https://github.com/ircnet-com/irc-library-service.git \
@@ -20,8 +18,8 @@ RUN cd irc-library-service/ \
 
 RUN cd Clis \
  && mvn package \
- && mv target/clis-1.0-SNAPSHOT.jar /srv/
- 
-RUN rm -rf irc-library-common irc-library-service Clis /var/cache/apk/*
+ && mv target/clis-*.jar /srv/clis.jar
 
-CMD ["java","-jar","/srv/clis-1.0-SNAPSHOT.jar"]
+RUN rm -rf irc-library-common irc-library-service Clis
+
+CMD ["java","-jar","/srv/clis.jar"]
