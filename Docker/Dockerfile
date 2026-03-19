@@ -1,27 +1,23 @@
-FROM maven:ibmjava-alpine
+FROM maven:3.9.12-eclipse-temurin-21 AS build
 
 ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
-
 WORKDIR /srv
-
-RUN apk update && apk add git
 
 RUN git clone https://github.com/ircnet-com/irc-library-common.git \
  && git clone https://github.com/ircnet-com/irc-library-service.git \
  && git clone https://github.com/ircnet-com/Clis.git
 
-RUN cd irc-library-common/ \
- && mvn install \
- && mvn clean
+RUN --mount=type=cache,target=/root/.m2 \
+    cd /srv/irc-library-common && mvn -B clean install && \
+    cd /srv/irc-library-service && mvn -B clean install && \
+    cd /srv/Clis && mvn -B clean package && \
+    mv target/clis-*.jar /srv/service.jar
 
-RUN cd irc-library-service/ \
- && mvn install \
- && mvn clean
+FROM eclipse-temurin:21-jre
 
-RUN cd Clis \
- && mvn package \
- && mv target/clis-1.0-SNAPSHOT.jar /srv/
- 
-RUN rm -rf irc-library-common irc-library-service Clis /var/cache/apk/*
+ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+WORKDIR /srv
 
-CMD ["java","-jar","/srv/clis-1.0-SNAPSHOT.jar"]
+COPY --from=build /srv/service.jar /srv/service.jar
+
+CMD ["java","-jar","/srv/service.jar"]

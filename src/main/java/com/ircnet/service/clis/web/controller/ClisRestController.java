@@ -8,10 +8,8 @@ import com.ircnet.service.clis.constant.SortOrder;
 import com.ircnet.service.clis.service.ChannelService;
 import com.ircnet.service.clis.web.datatables.*;
 import com.ircnet.service.clis.web.dto.ChannelDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,16 +17,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 /**
  * REST controller.
  */
 @RestController
+@Slf4j
 public class ClisRestController {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClisRestController.class);
+    private final ChannelService channelService;
 
-    @Autowired
-    private ChannelService channelService;
+    public ClisRestController(ChannelService channelService) {
+      this.channelService = channelService;
+    }
 
     /**
      *  Finds channels by given criteria.
@@ -57,7 +56,7 @@ public class ClisRestController {
         }
       }
       catch (Exception e) {
-        LOGGER.debug("Could not parse sort attributes", e);
+        log.debug("Could not parse sort attributes", e);
       }
 
       String searchTerm = null;
@@ -120,7 +119,7 @@ public class ClisRestController {
       sortOrder = SortOrder.valueOf(StringUtils.upperCase(sortOrderParam));
     }
     catch (Exception e) {
-      LOGGER.debug("Could not parse sort attributes", e);
+      log.debug("Could not parse sort attributes", e);
     }
 
     Collection<ChannelData> channels = channelService.find(null, channelFilter, MatchType.REG_EXP, topicFilter, minUsersFilter, maxUsersFilter, sortBy, sortOrder);

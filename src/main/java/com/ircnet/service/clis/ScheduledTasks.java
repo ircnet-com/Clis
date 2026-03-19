@@ -2,10 +2,8 @@ package com.ircnet.service.clis;
 
 import com.ircnet.service.clis.persistence.PersistenceService;
 import com.ircnet.service.clis.service.ChannelService;
-import jakarta.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,23 +14,24 @@ import java.util.Map;
  * Tasks that will be executed periodically.
  */
 @Component
+@Slf4j
 public class ScheduledTasks {
-  @SuppressWarnings("unused")
-  private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTasks.class);
+  private final PersistenceService persistenceService;
+  private final Map<String, ChannelData> channelMap;
+  private final ChannelService channelService;
 
-  @Autowired
-  private PersistenceService persistenceService;
-
-  @Resource(name = "channelMap")
-  private Map<String, ChannelData> channelMap;
-
-  @Autowired
-  private ChannelService channelService;
+  public ScheduledTasks(PersistenceService persistenceService,
+                        @Qualifier("channelMap") Map<String, ChannelData> channelMap,
+                        ChannelService channelService) {
+    this.persistenceService = persistenceService;
+    this.channelMap = channelMap;
+    this.channelService = channelService;
+  }
 
   /**
    * Task for saving channels.
    */
-  @Scheduled(fixedRateString = "${persistence.interval}")
+  @Scheduled(fixedRateString = "${service.persistence.interval}")
   public void persistTask() {
     persistenceService.saveChannels();
   }
@@ -48,7 +47,7 @@ public class ScheduledTasks {
       Map.Entry<String, ChannelData> entry = iterator.next();
 
       if(channelService.isObsoleteChannel(entry.getValue())) {
-        LOGGER.debug("Removed obsolete channel {}", entry.getKey());
+        log.debug("Removed obsolete channel {}", entry.getKey());
         iterator.remove();
       }
     }

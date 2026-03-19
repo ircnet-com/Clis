@@ -3,13 +3,11 @@ package com.ircnet.service.clis.persistence.file;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.persistence.PersistenceService;
 import com.ircnet.service.clis.service.ChannelService;
-import jakarta.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -23,20 +21,25 @@ import java.util.stream.Collectors;
  * Persists channels in a JSON file.
  */
 @Component
+@Slf4j
 public class FilePersistenceServiceImpl implements PersistenceService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FilePersistenceServiceImpl.class);
+//  @Value("${persistence.file}")
+//  private String fileName;
 
-  @Value("${persistence.file}")
-  private String fileName;
+  private final Map<String, ChannelData> channelMap;
+  private final ChannelService channelService;
+  private final ObjectMapper objectMapper;
+  private final ClisProperties properties;
 
-  @Resource(name = "channelMap")
-  private Map<String, ChannelData> channelMap;
-
-  @Autowired
-  private ChannelService channelService;
-
-  @Autowired
-  private ObjectMapper objectMapper;
+  public FilePersistenceServiceImpl(@Qualifier("channelMap") Map<String, ChannelData> channelMap,
+                                    ChannelService channelService,
+                                    ObjectMapper objectMapper,
+                                    ClisProperties properties) {
+    this.channelMap = channelMap;
+    this.channelService = channelService;
+    this.objectMapper = objectMapper;
+    this.properties = properties;
+  }
 
   /**
    * Saves channels..
@@ -47,7 +50,8 @@ public class FilePersistenceServiceImpl implements PersistenceService {
       return;
     }
 
-    LOGGER.trace("Saving {} channels to {}", channelMap.values().size(), fileName);
+    String fileName = properties.getPersistence().getFile();
+    log.trace("Saving {} channels to {}", channelMap.values().size(), fileName);
 
     Collection<ChannelData> channels = channelMap.values()
             .stream().filter(e -> !channelService.isObsoleteChannel(e))
@@ -60,10 +64,10 @@ public class FilePersistenceServiceImpl implements PersistenceService {
       objectMapper.addMixIn(ChannelData.class, ChannelDataMixin.class).writeValue(file, channels);
     }
     catch (IOException e) {
-      LOGGER.error("Failed to save channels", e);
+      log.error("Failed to save channels", e);
     }
 
-    LOGGER.info("Saved {} channels to {}", channels.size(), fileName);
+    log.info("Saved {} channels to {}", channels.size(), fileName);
   }
 
   /**
@@ -75,20 +79,21 @@ public class FilePersistenceServiceImpl implements PersistenceService {
       channelMap.clear();
     }
 
-    LOGGER.trace("Loading channels from {}", fileName);
+    String fileName = properties.getPersistence().getFile();
+    log.trace("Loading channels from {}", fileName);
 
     List<ChannelData> channels;
     File file = new File(fileName);
 
     try {
-      channels = objectMapper.readValue(file, new TypeReference<List<ChannelData>>(){});
+      channels = objectMapper.readValue(file, new TypeReference<>() {
+      });
     } catch (IOException e) {
-      LOGGER.info("No channels could be loaded from {}", fileName);
+      log.info("No channels could be loaded from {}", fileName);
       return;
     }
 
     channels.stream().filter(e -> !channelService.isObsoleteChannel(e)).forEach(e -> channelMap.put(e.getName(), e));
-
-    LOGGER.info("Loaded {} channels from {}", channelMap.size(), fileName);
+    log.info("Loaded {} channels from {}", channelMap.size(), fileName);
   }
 }

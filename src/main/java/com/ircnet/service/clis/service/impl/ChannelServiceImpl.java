@@ -1,17 +1,17 @@
 package com.ircnet.service.clis.service.impl;
 
 import com.ircnet.service.clis.ChannelData;
+import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.constant.SortBy;
 import com.ircnet.service.clis.constant.SortOrder;
 import com.ircnet.service.clis.service.ChannelService;
-import jakarta.annotation.Resource;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -27,47 +27,32 @@ import java.util.stream.Stream;
 public class ChannelServiceImpl implements ChannelService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelServiceImpl.class);
 
-    @Resource(name = "channelMap")
-    private Map<String, ChannelData> channelMap;
+    private final Map<String, ChannelData> channelMap;
+    private final ClisProperties properties;
 
-    @Value("${cache.emptyChannel.maxAge:28800000}")
-    private long emptyChannelMaxAge;
+    public ChannelServiceImpl(@Qualifier("channelMap") Map<String, ChannelData> channelMap,
+                              ClisProperties properties) {
+        this.channelMap = channelMap;
+        this.properties = properties;
+    }
 
     @Override
     public void updateOrInsert(String name, int userCount) {
-        ChannelData channelData = channelMap.get(name);
-
-        if (channelData == null) {
-            channelData = new ChannelData(name);
-            channelMap.put(name, channelData);
-        }
-
+        ChannelData channelData = channelMap.computeIfAbsent(name, ChannelData::new);
         channelData.setUserCount(userCount);
         channelData.setModificationDate(new Date());
     }
 
     @Override
     public void updateModes(String name, String modes) {
-        ChannelData channelData = channelMap.get(name);
-
-        if (channelData == null) {
-            channelData = new ChannelData(name);
-            channelMap.put(name, channelData);
-        }
-
+        ChannelData channelData = channelMap.computeIfAbsent(name, ChannelData::new);
         channelData.setModes(modes);
         channelData.setModificationDate(new Date());
     }
 
     @Override
     public void updateTopic(String name, String topic, String from) {
-        ChannelData channelData = channelMap.get(name);
-
-        if (channelData == null) {
-            channelData = new ChannelData(name);
-            channelMap.put(name, channelData);
-        }
-
+        ChannelData channelData = channelMap.computeIfAbsent(name, ChannelData::new);
         channelData.setTopic(topic);
 
         if(!(from == null && channelData.getTopic().equals(topic))) {
@@ -78,8 +63,11 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public Collection<ChannelData> find(String globalFilter, String channelFilter, MatchType chanFilterMatchType, String topicFilter, Integer minUsers, Integer maxUsers, SortBy sortBy, SortOrder sortOrder) {
-        LOGGER.debug("Filtering channels for query: globalFilter={} channelFilter={} topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}", globalFilter, channelFilter, topicFilter, minUsers, maxUsers, sortBy);
+    public Collection<ChannelData> find(String globalFilter, String channelFilter, MatchType chanFilterMatchType,
+                                        String topicFilter, Integer minUsers, Integer maxUsers, SortBy sortBy,
+                                        SortOrder sortOrder) {
+        LOGGER.debug("Filtering channels for query: globalFilter={} channelFilter={} topic={} minUsers={} maxUsers={} sortBy={} sortOrder={}",
+            globalFilter, channelFilter, topicFilter, minUsers, maxUsers, sortBy, sortOrder);
         Instant start = Instant.now();
 
         Stream<Map.Entry<String, ChannelData>> stream = channelMap.entrySet().stream();
@@ -94,7 +82,9 @@ public class ChannelServiceImpl implements ChannelService {
          * Remove secret and private channels.
          * These channels are also stored only to keep the topic.
          */
-        stream = stream.filter(e ->  e.getValue().getModes() == null || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
+        stream = stream
+            .filter(e -> e.getValue().getModes() == null
+                || (e.getValue().getModes().indexOf('s') == -1 && e.getValue().getModes().indexOf('p') == -1));
 
         /*
          * Apply user count filters (optional).
@@ -111,7 +101,9 @@ public class ChannelServiceImpl implements ChannelService {
          * Apply global filter. Either channel name or topic must match.
          */
         if(!StringUtils.isBlank(globalFilter)) {
-            stream = stream.filter(e -> (StringUtils.containsIgnoreCase(e.getValue().getName(), globalFilter)) || (e.getValue().getTopic() != null && StringUtils.containsIgnoreCase(e.getValue().getTopic(), globalFilter)));
+            stream = stream
+                .filter(e -> (StringUtils.containsIgnoreCase(e.getValue().getName(), globalFilter))
+                    || (e.getValue().getTopic() != null && StringUtils.containsIgnoreCase(e.getValue().getTopic(), globalFilter)));
         }
 
         /*
@@ -130,7 +122,8 @@ public class ChannelServiceImpl implements ChannelService {
          * Apply topic filter.
          */
         if(!StringUtils.isBlank(topicFilter)) {
-            stream = stream.filter(e -> e.getValue().getTopic() != null && StringUtils.containsIgnoreCase(e.getValue().getTopic(), topicFilter));
+            stream = stream.filter(e -> e.getValue().getTopic() != null
+                && StringUtils.containsIgnoreCase(e.getValue().getTopic(), topicFilter));
         }
 
         Stream<ChannelData> channelDataStream = stream.map(e -> e.getValue());
@@ -166,13 +159,12 @@ public class ChannelServiceImpl implements ChannelService {
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
         LOGGER.debug("Found {} channels in {} seconds", channelList.size(), timeElapsed / 1000.0);
-
         return channelList;
     }
 
     @Override
     public boolean isObsoleteChannel(ChannelData channelData) {
         return channelData.getUserCount() == 0 && (channelData.getModificationDate() == null
-                || (System.currentTimeMillis() - channelData.getModificationDate().getTime() > emptyChannelMaxAge));
+                || (System.currentTimeMillis() - channelData.getModificationDate().getTime() > properties.getCache().getEmptyChannelMaxAge()));
     }
 }

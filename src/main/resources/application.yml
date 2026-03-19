@@ -1,0 +1,41 @@
+service:
+  # Name of the service as configured in the S line
+  name: Clis
+  # Short description of the service
+  info: Channel List Service
+  # Distribution mask of the service
+  distributionMask: "*"
+  # Bit mask as configured in the S line
+  type: 0xf000
+  # Bit mask which defines what kind of information the service wants to receive for this particular connection
+  dataFlags: 0x1f000
+  # Bit mask which defines which information the service wants to receive in a connection burst
+  burstFlags: 0xf000
+
+  irc-servers:
+    -
+      # Address of the IRC server
+      address: 127.0.0.1
+      # Port of the IRC server
+      port: 6667
+      # Protocol to use for connecting to the irc server (ipv4 / ipv6)
+      protocol: ipv4
+      # Password as configured in the S line
+      password: password
+      # Response of /SQUERY Clis ADMIN
+  squery:
+    info: For more information visit https://www.ircnet.com
+    admin: IRCnet.com team <info@ircnet.com>
+    list:
+      # Maximum number of channels to return on /SQUERY Clis LIST
+      maxResults: 60
+
+  persistence:
+    # File for saving channels
+    file: channels.json
+    # Interval for saving channels in milliseconds (default: every hour)
+    interval: 3600000
+  cache:
+    # Empty channels will be removed after this time in milliseconds (default: 8 hours)
+    # Note: channels may get empty during netsplit
+    empty-channel-max-age: 28800000

@@ -1,13 +1,11 @@
 package com.ircnet.service.clis.event;
 
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.library.service.event.TopicEvent;
 import com.ircnet.service.clis.service.ChannelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-//
 
 /**
  * Event for TOPIC messages:
@@ -22,13 +20,17 @@ import org.springframework.stereotype.Component;
  * The topic author will not be sent in burst (see above).
  */
 @Component
-public class TopicEventListener extends AbstractEventListener<TopicEvent> {
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(TopicEventListener.class);
+@Order(2)
+public class TopicEventListener extends AbstractEventListener<TopicEvent, SingletonIRCConnectionService> {
+    private final ChannelService channelService;
 
-    @Autowired
-    private ChannelService channelService;
+    public TopicEventListener(SingletonIRCConnectionService ircConnectionService,
+                              ChannelService channelService) {
+        super(ircConnectionService);
+        this.channelService = channelService;
+    }
 
+    @Override
     protected void onEvent(TopicEvent event) {
         channelService.updateTopic(event.getChannelName(), event.getTopic(), event.getFrom());
     }

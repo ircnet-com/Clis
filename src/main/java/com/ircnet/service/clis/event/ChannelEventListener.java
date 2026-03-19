@@ -1,11 +1,10 @@
 package com.ircnet.service.clis.event;
 
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.library.service.event.ChannelEvent;
 import com.ircnet.service.clis.service.ChannelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,13 +19,17 @@ import org.springframework.stereotype.Component;
  * netsplit.
  */
 @Component
-public class ChannelEventListener extends AbstractEventListener<ChannelEvent> {
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChannelEventListener.class);
+@Order(0)
+public class ChannelEventListener extends AbstractEventListener<ChannelEvent, SingletonIRCConnectionService> {
+    private final ChannelService channelService;
 
-    @Autowired
-    private ChannelService channelService;
+    public ChannelEventListener(SingletonIRCConnectionService ircConnectionService,
+                                ChannelService channelService) {
+        super(ircConnectionService);
+        this.channelService = channelService;
+    }
 
+    @Override
     protected void onEvent(ChannelEvent event) {
         channelService.updateOrInsert(event.getChannelName(), event.getUserCount());
     }

@@ -1,11 +1,10 @@
 package com.ircnet.service.clis.event;
 
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
 import com.ircnet.library.common.event.AbstractEventListener;
 import com.ircnet.library.service.event.ChannelModeEvent;
 import com.ircnet.service.clis.service.ChannelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,13 +20,17 @@ import org.springframework.stereotype.Component;
  * again.
  */
 @Component
-public class ChannelModeEventListener extends AbstractEventListener<ChannelModeEvent> {
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChannelModeEventListener.class);
+@Order(1)
+public class ChannelModeEventListener extends AbstractEventListener<ChannelModeEvent, SingletonIRCConnectionService> {
+    private final ChannelService channelService;
 
-    @Autowired
-    private ChannelService channelService;
+    public ChannelModeEventListener(SingletonIRCConnectionService ircConnectionService,
+                                    ChannelService channelService) {
+        super(ircConnectionService);
+        this.channelService = channelService;
+    }
 
+    @Override
     protected void onEvent(ChannelModeEvent event) {
         channelService.updateModes(event.getChannelName(), event.getModes());
     }

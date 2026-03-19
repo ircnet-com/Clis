@@ -1,22 +1,23 @@
 package com.ircnet.service.clis.strategy;
 
 import com.ircnet.library.common.User;
+import com.ircnet.library.common.connection.SingletonIRCConnectionService;
+import com.ircnet.library.service.connection.IRCServiceConnection;
+import com.ircnet.library.service.squery.SQueryCommand;
 import com.ircnet.service.clis.ChannelData;
 import com.ircnet.service.clis.ClisProperties;
 import com.ircnet.service.clis.constant.MatchType;
 import com.ircnet.service.clis.service.ChannelService;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
  * Handler for:
@@ -24,19 +25,21 @@ import java.util.stream.Collectors;
  *  - /SQUERY Clis HELP LIST
  */
 @Component
-public class SQueryCommandList extends SQueryCommand {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SQueryCommandList.class);
-
-    @Autowired
-    private ChannelService channelService;
-
-    @Autowired
-    private ClisProperties properties;
-
-    @Value("${service.squery.list.maxresults:0}")
-    private int maxResults;
+@Order(0)
+@Slf4j
+public class SQueryCommandList extends SQueryCommand<SingletonIRCConnectionService> {
+    private final ChannelService channelService;
+    private final ClisProperties properties;
 
     private Options options;
+
+    public SQueryCommandList(SingletonIRCConnectionService ircConnectionService,
+                             ChannelService channelService,
+                             ClisProperties properties) {
+        super(ircConnectionService);
+        this.channelService = channelService;
+        this.properties = properties;
+    }
 
     /**
      * Prepares the option parser.
@@ -80,6 +83,11 @@ public class SQueryCommandList extends SQueryCommand {
         options.addOption(show);
     }
 
+    @Override
+    public String getName() {
+        return "LIST";
+    }
+
     /**
      * Handler for: /SQUERY Clis LIST
      *
@@ -87,13 +95,14 @@ public class SQueryCommandList extends SQueryCommand {
      * @param message message with format: LIST [options] <mask>
      */
     @Override
-    public void processCommand(User from, String message) {
+    public void processCommand(IRCServiceConnection ircServiceConnection, User from,
+                               String message, Map<String, String> tags) {
         String nick = from.getNick();
         String[] parts = message.split(" ");
         int errorCount = 0;
 
         if (parts.length == 1) {
-            notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", properties.getName());
+            ircConnectionService.notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", properties.getName());
             return;
         }
 
@@ -104,7 +113,7 @@ public class SQueryCommandList extends SQueryCommand {
             CommandLine commandLine = parser.parse(options, requestArguments);
 
             if (CollectionUtils.isEmpty(commandLine.getArgList())) {
-                notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", properties.getName());
+                ircConnectionService.notice(nick, "You did not specify a channel mask. Use /SQUERY %s HELP LIST", properties.getName());
                 return;
             }
 
@@ -118,7 +127,7 @@ public class SQueryCommandList extends SQueryCommand {
                 try {
                     minUsers = Integer.parseInt(commandLine.getOptionValue("min"));
                 } catch (NumberFormatException e) {
-                    notice(nick, "Argument of -min is not a number: '%s'", commandLine.getOptionValue("min"));
+                    ircConnectionService.notice(nick, "Argument of -min is not a number: '%s'", commandLine.getOptionValue("min"));
                     errorCount++;
                 }
             }
@@ -127,7 +136,7 @@ public class SQueryCommandList extends SQueryCommand {
                 try {
                     maxUsers = Integer.parseInt(commandLine.getOptionValue("max"));
                 } catch (NumberFormatException e) {
-                    notice(nick, "Argument of -max is not a number: '%s'", commandLine.getOptionValue("max"));
+                    ircConnectionService.notice(nick, "Argument of -max is not a number: '%s'", commandLine.getOptionValue("max"));
                     errorCount++;
                 }
             }
@@ -138,7 +147,7 @@ public class SQueryCommandList extends SQueryCommand {
                 String flags = commandLine.getOptionValue("show");
 
                 if (!flags.matches("^[mt]+$")) {
-                    notice(nick, "Invalid -show flags '%s'. Allowed flags: 'mt'", flags);
+                    ircConnectionService.notice(nick, "Invalid -show flags '%s'. Allowed flags: 'mt'", flags);
                     errorCount++;
                 } else {
                     if (flags.indexOf('m') != -1) {
@@ -152,18 +161,18 @@ public class SQueryCommandList extends SQueryCommand {
             }
 
             if (errorCount > 0) {
-                notice(nick, "Your query contains %d errors. Use /SQUERY %s HELP LIST", errorCount, properties.getName());
+                ircConnectionService.notice(nick, "Your query contains %d errors. Use /SQUERY %s HELP LIST", errorCount, properties.getName());
                 return;
             }
 
-            String querySummary = buildQuerySummary(nick, minUsers, maxUsers, topic, showModes, showTopicAuthor, mask);
-            notice(nick, querySummary);
+            String querySummary = buildQuerySummary(minUsers, maxUsers, topic, showModes, showTopicAuthor, mask);
+            ircConnectionService.notice(nick, querySummary);
 
-            notice(nick, "Returning a maximum of %d channel names.", maxResults);
+            ircConnectionService. notice(nick, "Returning a maximum of %d channel names.", properties.getSquery().getList().getMaxResults());
 
             Collection<ChannelData> channels = channelService.find(null, mask, MatchType.REG_EXP, topic, minUsers, maxUsers, null, null);
             int actualResultCount = channels.size();
-            channels = channels.stream().limit(maxResults).collect(Collectors.toList());
+            channels = channels.stream().limit(properties.getSquery().getList().getMaxResults()).toList();
 
             for (ChannelData channel : channels) {
                 StringBuilder response = new StringBuilder();
@@ -184,16 +193,17 @@ public class SQueryCommandList extends SQueryCommand {
                     response.append(String.format(" (%s)", channel.getTopicFrom()));
                 }
 
-                notice(nick, response.toString());
+                ircConnectionService.notice(nick, response.toString());
             }
 
-            notice(nick, "Found %d visible channels.", actualResultCount);
+            ircConnectionService.notice(nick, "Found %d visible channels.", actualResultCount);
         } catch (ParseException e) {
-            LOGGER.debug("Failed to parse '{}' from {}", message, from, e);
+            log.debug("Failed to parse '{}' from {}", message, from, e);
         }
     }
 
-    private String buildQuerySummary(String nick, Integer minUsers, Integer maxUsers, String topic, boolean showModes, boolean showTopicAuthor, String mask) {
+    private String buildQuerySummary(Integer minUsers, Integer maxUsers, String topic, boolean showModes,
+                                     boolean showTopicAuthor, String mask) {
         StringBuilder querySummary = new StringBuilder("Query summary: searching for channels matching \"");
         querySummary.append(mask);
         querySummary.append("\"");
@@ -234,25 +244,25 @@ public class SQueryCommandList extends SQueryCommand {
      * @param message "HELP LIST [EXAMPLES]"
      */
     @Override
-    public void processHelp(User from, String message) {
+    public void processHelp(IRCServiceConnection ircServiceConnection, User from, String message) {
         String nick = from.getNick();
 
         String[] args = message.split(" ");
 
         if (args.length > 2 && args[2].equalsIgnoreCase("EXAMPLES")) {
-            notice(nick, "LIST Examples:");
-            notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", properties.getName());
-            notice(nick, "  Lists all channels which start with #ircnet (#ircnet, #ircnet.com, ..) and have at least 10 users");
+            ircConnectionService.notice(nick, "LIST Examples:");
+            ircConnectionService.notice(nick, "/SQUERY %s LIST -min 10 #ircnet*", properties.getName());
+            ircConnectionService.notice(nick, "  Lists all channels which start with #ircnet (#ircnet, #ircnet.com, ..) and have at least 10 users");
 
-            notice(nick, "/SQUERY %s LIST -min 10 -t http *", properties.getName());
-            notice(nick, "  Lists all channels whose topic contains \"http\" and have at least 10 users");
+            ircConnectionService.notice(nick, "/SQUERY %s LIST -min 10 -t http *", properties.getName());
+            ircConnectionService.notice(nick, "  Lists all channels whose topic contains \"http\" and have at least 10 users");
 
-            notice(nick, "/SQUERY %s LIST -show mt *", properties.getName());
-            notice(nick, "  Lists all channels and shows the modes and the topic author");
+            ircConnectionService.notice(nick, "/SQUERY %s LIST -show mt *", properties.getName());
+            ircConnectionService.notice(nick, "  Lists all channels and shows the modes and the topic author");
         } else {
-            notice(nick, "Usage: /SQUERY %s LIST [options] <mask>", properties.getName());
+            ircConnectionService.notice(nick, "Usage: /SQUERY %s LIST [options] <mask>", properties.getName());
             sendOptionSyntax(nick, options);
-            notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", properties.getName());
+            ircConnectionService.notice(nick, "For LIST examples use /SQUERY %s HELP LIST EXAMPLES", properties.getName());
         }
     }
 
@@ -279,7 +289,7 @@ public class SQueryCommandList extends SQueryCommand {
                 }
             }
 
-            notice(nick, " %-20s %s", stringBuilder.toString(), option.getDescription() != null ? option.getDescription() : "");
+            ircConnectionService.notice(nick, " %-20s %s", stringBuilder.toString(), option.getDescription() != null ? option.getDescription() : "");
         }
     }
 }

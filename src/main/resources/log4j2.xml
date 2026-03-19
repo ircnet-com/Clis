@@ -13,7 +13,7 @@
                 <pattern>%d{ISO8601} %-5p [%t] %c: %m%n</pattern>
             </PatternLayout>
             <Policies>
-                <!-- rollover on startup, daily and when the file reaches
+                <!-- Rollover on startup, daily and when the file reaches
                     10 MegaBytes -->
                 <OnStartupTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB" />
@@ -29,8 +29,8 @@
             <AppenderRef ref="RollingFile" />
         </Root>
 
-        <Logger name="com.ircnet.service.clis" level="info"></Logger>
-        <Logger name="com.ircnet" level="info"></Logger>
+        <Logger name="com.ircnet.service.clis" level="info"/>
+        <Logger name="com.ircnet" level="info"/>
     </Loggers>
 
 </Configuration>
